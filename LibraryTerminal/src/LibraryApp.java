@@ -14,22 +14,27 @@ public class LibraryApp {
 		movieInventory.add(new Movie("Move2", 100, "jim Brown", 100));
 		bookInventory.add(new Book("Book1", 100, new ArrayList<String>(Arrays.asList("Mike Jone", "Kyle Johns"))));
 		bookInventory.add(new Book("Book2", 100, new ArrayList<String>(Arrays.asList("Billy Mandy"))));
+		
 		System.out.println("Welcome to the library");
 		System.out.println(bookInventory);
 		System.out.println(movieInventory);
+		
 		boolean userInLibrary = true;
 		int userMainMenuChoice;
 		int userBrowseMenuChoice;
+		
 		while (userInLibrary) {
 			System.out.println(
 					"What would you like to do?\n1. Browse\n2. Search\n3. Return\n4. Donate Book\n5. Checkout\n6. Exit");
 			userMainMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 6);
+		
 			switch (userMainMenuChoice) {
 			case 1:
 				// Browse
 				System.out.println(
 						"1. Browse Books\n2. Browse Movie\n3. Browse Author\n4. Browse Director\n5. Exit To Main Menu");
 				userBrowseMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 5);
+			
 				switch (userBrowseMenuChoice) {
 				case 1:
 					// Browse Books

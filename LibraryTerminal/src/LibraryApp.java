@@ -16,8 +16,6 @@ public class LibraryApp {
 		bookInventory.add(new Book("Book2", 100, new ArrayList<String>(Arrays.asList("Billy Mandy")))); // test data
 
 		System.out.println("Welcome to the library");
-		System.out.println(bookInventory);
-		System.out.println(movieInventory);
 
 		boolean userInLibrary = true;
 		int userMainMenuChoice;
@@ -38,26 +36,25 @@ public class LibraryApp {
 				switch (userBrowseMenuChoice) {
 				case 1:
 					// Browse Books
-					System.out.printf("%-3s%-15s%s%n", "No.", "Book Title", "Author(s)");
-					for (int i = 0; i < bookInventory.size(); i++) {
-						System.out.printf("%-3s%-15s%s%n", i + 1, bookInventory.get(i).getTitle(),
-								bookInventory.get(i).getAuthor());
-					}
+					boolean browsingBooks = true;
+					do {
+					printBooks(bookInventory);
 					int userBrowseBookChoice = val.integerInRangeStringToExit(
 							"Enter book number to grab book or type \"main\" to return to main menu: ", "main", scnr, 1,
 							bookInventory.size());
-					if (userBrowseBookChoice == -1) {
-						break;
-					} else {
+					if (userBrowseBookChoice == -1) { //exit browse submenu
+						browsingBooks = false;
+					} else { //add to cart
 						System.out.println(bookInventory.get(userBrowseBookChoice-1).getTitle() + " added to cart.");
-						// need to actually create a cart and add the item to that cart at this point
-						boolean continueBrowse = val.userContinueYorN("Continue Browsing? (y/n): ", scnr);
+						// need to create a cart and add the item to that cart at this point
+						boolean continueBrowse = val.userContinueYorN("Continue Browsing? (y/n): ", scnr); //asking to continue browsing or return to main
 						if (continueBrowse) {
-							// recursion ?? do/while loop?
+							browsingBooks = true;
 						} else {
-							break; //should loop back to main menu 
+							browsingBooks = false;
 						}
 					}
+					} while (browsingBooks);
 					break;
 				case 2:
 					// Browse Movies
@@ -138,6 +135,14 @@ public class LibraryApp {
 
 		int userMenuChoice = validate.integerWithinRange("Please enter your menu item", scnr, 1, 5);
 
+	}
+
+	private static void printBooks(ArrayList<Book> bookInventory) {
+		System.out.printf("%-5s%-15s%s%n", "No.", "Book Title", "Author(s)");
+		for (int i = 0; i < bookInventory.size(); i++) {
+			System.out.printf("%-5s%-15s%s%n", i + 1, bookInventory.get(i).getTitle(),
+					bookInventory.get(i).getAuthor());
+		}
 	}
 
 }

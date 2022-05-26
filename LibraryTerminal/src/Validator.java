@@ -37,12 +37,13 @@ public class Validator {
 
 		System.out.print(promptMsg);
 		do {
-			String returnValueStr = scnr.nextLine();
-			if (returnValueStr.equalsIgnoreCase(exitString)) {
+			scnr.nextLine();
+			String strValue = scnr.next();
+			if (strValue.equalsIgnoreCase(exitString)) {
 				return -1;
 			}
 			try {
-				returnValue = Integer.valueOf(returnValueStr);
+				returnValue = Integer.parseInt(strValue);
 				if (returnValue < min || returnValue > max) {
 					System.out.print("Please enter a number between " + min + " and " + max + ": ");
 					keepGoing = true;

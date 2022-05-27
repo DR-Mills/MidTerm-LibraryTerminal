@@ -3,7 +3,19 @@
 
 	String title;
 
-	enum status { CHECKEDOUT, ONSHELF, LOST };
+	enum status { CHECKEDOUT, ONSHELF, LOST, InCart};
+	//enum variable for media status
+	status mediaStatus = status.ONSHELF;
+	public status getMediaStatus() {
+		return mediaStatus;
+	}
+
+
+	public void setMediaStatus(status mediaStatus) {
+		this.mediaStatus = mediaStatus;
+	}
+
+
 	int condition;
 	// Add date object. Calendar.
 	
@@ -12,9 +24,10 @@
 	// read for book, watch for movie, listen for audiobooks
 
 
-	public Media(String title, int condition) {
+	public Media(String title, int condition, status mediaStatus) {
 		this.title = title;
 		this.condition = condition;
+		this.mediaStatus = mediaStatus;
 	}
 
 

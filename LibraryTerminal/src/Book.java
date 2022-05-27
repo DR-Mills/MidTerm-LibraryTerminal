@@ -10,8 +10,8 @@ public class Book extends Media {
 		
 	}
 
-	public Book(String title, int condition, ArrayList<String> author) {
-		super(title, condition);
+	public Book(String title, int condition, status mediaStatus, ArrayList<String> author) {
+		super(title, condition, mediaStatus);
 		this.author = author;
 	}
 

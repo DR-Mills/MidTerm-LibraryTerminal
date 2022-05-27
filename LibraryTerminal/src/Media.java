@@ -3,15 +3,16 @@
 
 	String title;
 
-	enum status { CHECKEDOUT, ONSHELF, LOST, InCart};
+//	enum status { CHECKEDOUT, ONSHELF, LOST, InCart};
 	//enum variable for media status
-	status mediaStatus = status.ONSHELF;
-	public status getMediaStatus() {
+	Status mediaStatus = Status.ONSHELF;
+	
+	public Status getMediaStatus() {
 		return mediaStatus;
 	}
 
 
-	public void setMediaStatus(status mediaStatus) {
+	public void setMediaStatus(Status mediaStatus) {
 		this.mediaStatus = mediaStatus;
 	}
 
@@ -24,7 +25,7 @@
 	// read for book, watch for movie, listen for audiobooks
 
 
-	public Media(String title, int condition, status mediaStatus) {
+	public Media(String title, int condition, Status mediaStatus) {
 		this.title = title;
 		this.condition = condition;
 		this.mediaStatus = mediaStatus;

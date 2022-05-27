@@ -5,15 +5,16 @@ import java.util.Scanner;
 public class LibraryApp {
 	static Validator val = new Validator();
 	static Scanner scnr = new Scanner(System.in);
+	static ArrayList<Movie> movieInventory = new ArrayList<>();
+	static ArrayList<Book> bookInventory = new ArrayList<>();
+	static Cart cart = new Cart();
 
 	public static void main(String[] args) {
 
-		ArrayList<Movie> movieInventory = new ArrayList<>();
-		ArrayList<Book> bookInventory = new ArrayList<>();
-		movieInventory.add(new Movie("Move1", 100, "Joe Blow", 120)); // test data
-		movieInventory.add(new Movie("Move2", 100, "jim Brown", 100)); // test data
-		bookInventory.add(new Book("Book1", 100, new ArrayList<String>(Arrays.asList("Mike Jone", "Kyle Johns")))); // test data																											
-		bookInventory.add(new Book("Book2", 100, new ArrayList<String>(Arrays.asList("Billy Mandy")))); // test data
+		movieInventory.add(new Movie("Move1", 100, Status.ONSHELF, "Joe Blow", 120)); // test data
+		movieInventory.add(new Movie("Move2", 100, Status.ONSHELF, "jim Brown", 100)); // test data
+		bookInventory.add(new Book("Book1", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Mike Jone", "Kyle Johns")))); // test data																											
+		bookInventory.add(new Book("Book2", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Billy Mandy")))); // test data
 
 		System.out.println("Welcome to the library");
 
@@ -45,8 +46,10 @@ public class LibraryApp {
 					if (userBrowseBookChoice == -1) { //exit browse submenu
 						browsingBooks = false;
 					} else { //add to cart
+						if (bookInventory.get(userBrowseBookChoice -1).mediaStatus.equals(Status.ONSHELF) ) {
 						System.out.println(bookInventory.get(userBrowseBookChoice-1).getTitle() + " added to cart.");
-						// need to create a cart and add the item to that cart at this point
+						addToCart(bookInventory.get(userBrowseBookChoice -1));}
+					else { System.out.print("Sorry Selection is not available");}
 						boolean continueBrowse = val.userContinueYorN("Continue Browsing? (y/n): ", scnr); //asking to continue browsing or return to main
 						if (continueBrowse) {
 							browsingBooks = true;
@@ -57,8 +60,28 @@ public class LibraryApp {
 					} while (browsingBooks);
 					break;
 				case 2:
-					// Browse Movies
-					break;
+					//Browse Movies
+					boolean browsingMovies = true;
+					do {
+					printMovies(movieInventory);
+					int userBrowseMovieChoice = val.integerInRangeStringToExit(
+							"Enter movie number to grab movie or type \"main\" to return to main menu: ", "main", scnr, 1,
+							movieInventory.size());
+					if (userBrowseMovieChoice == -1) { //exit browse submenu
+						browsingMovies = false;
+					} else { //add to cart
+						if (movieInventory.get(userBrowseMovieChoice -1).mediaStatus.equals(Status.ONSHELF) ) {
+						System.out.println(movieInventory.get(userBrowseMovieChoice-1).getTitle() + " added to cart.");
+						addToCart(movieInventory.get(userBrowseMovieChoice -1));}
+					else { System.out.print("Sorry Selection is not available");}
+						boolean continueBrowse = val.userContinueYorN("Continue Browsing? (y/n): ", scnr); //asking to continue browsing or return to main
+						if (continueBrowse) {
+							browsingMovies = true;
+						} else {
+							browsingMovies = false;
+						}
+					}
+					} while (browsingMovies);					break;
 				case 3:
 					// Browse Author
 					break;
@@ -143,6 +166,22 @@ public class LibraryApp {
 			System.out.printf("%-5s%-15s%s%n", i + 1, bookInventory.get(i).getTitle(),
 					bookInventory.get(i).getAuthor());
 		}
+	}
+	private static void printMovies(ArrayList<Movie> movieInventory) {
+		System.out.printf("%-5s%-15s%s%n", "No.", "Book Title", "Author(s)");
+		for (int i = 0; i < movieInventory.size(); i++) {
+			System.out.printf("%-5s%-15s%s%n", i + 1, movieInventory.get(i).getTitle(),
+					movieInventory.get(i).getDirector());
+		}
+	}
+
+	private static void addToCart(Book book) {
+		cart.addToCart(book);
+		book.setMediaStatus(Status.INCART);
+	}
+	private static void addToCart(Movie movie) {
+		cart.addToCart(movie);
+		movie.setMediaStatus(Status.INCART);
 	}
 
 }

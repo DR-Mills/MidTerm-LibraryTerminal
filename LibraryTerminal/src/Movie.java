@@ -15,7 +15,7 @@ public class Movie extends Media{
 		this.runTimeMin = runTimeMin;
 	}
 
-	public Movie(String title, int condition, status mediaStatus, String director, int runTimeMin) {
+	public Movie(String title, int condition, Status mediaStatus, String director, int runTimeMin) {
 		super(title, condition, mediaStatus);
 		this.director = director;
 		this.runTimeMin = runTimeMin;

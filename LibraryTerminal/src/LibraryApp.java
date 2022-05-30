@@ -21,6 +21,15 @@ public class LibraryApp {
 		boolean userInLibrary = true;
 		int userMainMenuChoice;
 		int userBrowseMenuChoice;
+		String donateBookAuthor;
+		int donateBookCondition;
+		String donateBookTitle;
+		String donateMovieDirector;
+		int donateMovieCondition;
+		String donateMovieTitle;
+		int donateMovieRunTime;
+		int userDonateChoice;
+		
 
 		while (userInLibrary) {
 			System.out.println(
@@ -84,6 +93,8 @@ public class LibraryApp {
 					} while (browsingMovies);					break;
 				case 3:
 					// Browse Author
+					
+					
 					break;
 				case 4:
 					// Browse Director
@@ -100,9 +111,44 @@ public class LibraryApp {
 				break;
 			case 3:
 				// Return
+				System.out.println();
 				break;
 			case 4:
 				// Donate Book
+				//Build method in validator class to validate Input
+				System.out.println("What would you like to donate\n1. Book\n2. Movie");
+				userDonateChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
+				if(userDonateChoice == 1) {
+				System.out.print("Enter Book Title: ");
+				donateBookTitle = scnr.next();
+				System.out.print("Enter Book Author: ");
+				donateBookAuthor = scnr.next();
+				System.out.print("Enter Book Condition(1-100): ");
+				donateBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					if(donateBookCondition < 40) {
+						//recycle book
+					}else {
+						bookInventory.add(new Book(donateBookTitle, donateBookCondition, Status.ONSHELF, new ArrayList<String>(Arrays.asList(donateBookAuthor))));
+						System.out.println("Book donated");
+					}
+				
+				} else if(userDonateChoice == 2) {
+					System.out.print("Enter Movie Title: ");
+					donateMovieTitle = scnr.next();
+					System.out.print("Enter Movie Director: ");
+					donateMovieDirector = scnr.next();
+					System.out.print("Enter Movie Condition(1-100): ");
+					donateMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					System.out.println("Enter Movie Run Time");
+					donateMovieRunTime = scnr.nextInt();
+					if(donateMovieCondition < 40) {
+						//recycle Movie
+					}else {
+						movieInventory.add(new Movie(donateMovieTitle, donateMovieCondition, Status.ONSHELF, donateMovieDirector, donateMovieRunTime));
+						System.out.println("Movie donated");
+					}
+					
+				}
 				break;
 			case 5:
 				// Checkout
@@ -168,7 +214,7 @@ public class LibraryApp {
 		}
 	}
 	private static void printMovies(ArrayList<Movie> movieInventory) {
-		System.out.printf("%-5s%-15s%s%n", "No.", "Book Title", "Author(s)");
+		System.out.printf("%-5s%-15s%s%n", "No.", "Movie Title", "Author(s)");
 		for (int i = 0; i < movieInventory.size(); i++) {
 			System.out.printf("%-5s%-15s%s%n", i + 1, movieInventory.get(i).getTitle(),
 					movieInventory.get(i).getDirector());
@@ -183,5 +229,6 @@ public class LibraryApp {
 		cart.addToCart(movie);
 		movie.setMediaStatus(Status.INCART);
 	}
+	
 
 }

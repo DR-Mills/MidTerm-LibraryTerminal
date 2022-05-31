@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class LibraryApp {
 	static Validator val = new Validator();
@@ -9,7 +10,9 @@ public class LibraryApp {
 	static ArrayList<Movie> movieInventory = new ArrayList<>();
 	static ArrayList<Book> bookInventory = new ArrayList<>();
 	static Cart cart = new Cart();
-
+	static Stack<Media> recycledItems = new Stack<Media>();
+	static Stack<Media> returnedItems = new Stack<Media>();
+	
 	public static void main(String[] args) {
 
 		movieInventory.add(new Movie("Move1", 100, Status.ONSHELF, "Joe Brown", 120)); // test data
@@ -18,7 +21,6 @@ public class LibraryApp {
 				new ArrayList<String>(Arrays.asList("Mike Brown", "Kyle Johns")))); // test data
 		bookInventory.add(new Book("Book2", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Billy Brown")))); // test
 																														// data
-
 		System.out.println("Welcome to the library");
 
 		boolean userInLibrary = true;
@@ -32,7 +34,16 @@ public class LibraryApp {
 		String donateMovieTitle;
 		int donateMovieRunTime;
 		int userDonateChoice;
-
+		int userReturnChoice;
+		String returnBookTitle;
+		String returnBookAuthor;
+		int returnBookCondition;
+		String returnMovieTitle;
+		String returnMovieDirector;
+		int returnMovieCondition;
+		int returnMovieRunTime;
+		
+		
 		while (userInLibrary) {
 			System.out.println(
 					"What would you like to do?\n1. Browse\n2. Search\n3. Return\n4. Donate Book\n5. Checkout\n6. Exit");
@@ -169,7 +180,67 @@ public class LibraryApp {
 
 			case 3:
 				// Return
-				System.out.println();
+				System.out.println("What would you like to return\n1. Book\n2. Movie");
+				userReturnChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
+				if (userReturnChoice == 1) {
+					System.out.print("Enter Book Title: ");
+					returnBookTitle = scnr.next();
+					System.out.print("Enter Book Author: ");
+					returnBookAuthor = scnr.next();
+					System.out.print("Enter Book Condition(1-100): ");
+					returnBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					for(Book book: bookInventory) {
+						if(returnBookTitle.equals(book.getTitle())) {
+							if (returnBookCondition < 40) {
+								// recycle book
+								bookInventory.remove(book);
+								recycledItems.add(new Book(returnBookTitle, returnBookCondition, Status.INRECYCLED,
+										new ArrayList<String>(Arrays.asList(returnBookAuthor))));
+								System.out.println("Book recycled");
+							} else {
+								returnedItems.add(new Book(returnBookTitle, returnBookCondition, Status.INRETURNS,
+										new ArrayList<String>(Arrays.asList(returnBookAuthor))));
+								System.out.println("Book returned");
+							}
+							
+							
+						}else {
+							System.out.println("Book not in our catalog.");
+				
+						}
+					}
+
+				} else if (userReturnChoice == 2) {
+					System.out.print("Enter Movie Title: ");
+					returnMovieTitle = scnr.next();
+					System.out.print("Enter Movie Director: ");
+					returnMovieDirector = scnr.next();
+					System.out.print("Enter Movie Condition(1-100): ");
+					returnMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					System.out.println("Enter Movie Run Time");
+					returnMovieRunTime = scnr.nextInt();
+					for(Movie movie: movieInventory) {
+						if(returnMovieTitle.equals(movie.getTitle())) {
+							if (returnMovieCondition < 40) {
+								// recycle book
+								movieInventory.remove(movie);
+								recycledItems.add(new Movie(returnMovieTitle, returnMovieCondition, Status.INRETURNS,returnMovieDirector, returnMovieRunTime));
+								System.out.println("Movie recycled");
+							} else {
+								returnedItems.add(new Movie(returnMovieTitle, returnMovieCondition, Status.INRETURNS,returnMovieDirector, returnMovieRunTime));
+								System.out.println("Movie returned");
+								
+							}
+							
+							
+						}else {
+							System.out.println("Movie not in our catalog.");
+				
+						}
+					}
+					
+				}
+
 				break;
 			case 4:
 				// Donate Book
@@ -234,6 +305,7 @@ public class LibraryApp {
 			case 6:
 				// Exit
 				userInLibrary = false;
+				break;
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + userMainMenuChoice);
 

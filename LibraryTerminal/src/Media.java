@@ -1,5 +1,6 @@
+import java.util.ArrayList;
 
-	abstract class Media {
+abstract class Media {
 
 	String title;
 
@@ -50,4 +51,20 @@
 	public void setCondition(int condition) {
 		this.condition = condition;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "Media [title=" + title + ", mediaStatus=" + mediaStatus + ", condition=" + condition + "]";
+	}
+
+
+	protected abstract Object getAuthor();
+
+
+	protected abstract Object getDirector();
+
+
+	
+	
 }

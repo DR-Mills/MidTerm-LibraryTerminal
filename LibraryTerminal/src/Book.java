@@ -23,4 +23,9 @@ public class Book extends Media {
 		this.author = author;
 	}
 
+	@Override
+	protected String getDirector() {
+		return "";
+	}
+
 }

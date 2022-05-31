@@ -18,6 +18,7 @@ public class Validator {
 				} else {
 					keepGoing = false;
 				}
+				scnr.nextLine();
 			} catch (InputMismatchException e) {
 				System.out
 						.print("Invalid input. Please enter a whole number only between " + min + " and " + max + ": ");
@@ -37,7 +38,6 @@ public class Validator {
 
 		System.out.print(promptMsg);
 		do {
-			scnr.nextLine();
 			String strValue = scnr.next();
 			if (strValue.equalsIgnoreCase(exitString)) {
 				return -1;

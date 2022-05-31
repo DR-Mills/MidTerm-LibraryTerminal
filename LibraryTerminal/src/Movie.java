@@ -25,4 +25,9 @@ public class Movie extends Media{
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	protected String getAuthor() {
+		// returns director
+		return director;
+	}
 }

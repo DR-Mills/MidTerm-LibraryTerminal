@@ -177,6 +177,8 @@ public class LibraryApp {
 					}
 			
 				} while (searchingCatalog);
+				
+				break;
 
 			case 3: // Return
 				
@@ -446,10 +448,11 @@ public class LibraryApp {
 	}
 
 	
-	private static void checkout() {
+	private static void checkout() { //add--automatically leave library...?
 		for (Media media : cart.getCart()) {
 			media.setMediaStatus(Status.CHECKEDOUT);
 			media.setCondition(media.getCondition() - 1);
 		}
+		cart.getCart().clear();
 	}
 }

@@ -25,25 +25,7 @@ public class LibraryApp {
 
 		boolean userInLibrary = true;
 		int userMainMenuChoice;
-		int userBrowseMenuChoice;
-		String donateBookAuthor;
-		int donateBookCondition;
-		String donateBookTitle;
-		String donateMovieDirector;
-		int donateMovieCondition;
-		String donateMovieTitle;
-		int donateMovieRunTime;
-		int userDonateChoice;
-		int userReturnChoice;
-		String returnBookTitle;
-		String returnBookAuthor;
-		int returnBookCondition;
-		String returnMovieTitle;
-		String returnMovieDirector;
-		int returnMovieCondition;
-		int returnMovieRunTime;
-		
-		
+				
 		while (userInLibrary) {
 			System.out.println(
 					"What would you like to do?\n1. Browse\n2. Search\n3. Return\n4. Donate Book\n5. Checkout\n6. Exit");
@@ -53,7 +35,7 @@ public class LibraryApp {
 			
 			case 1: // Browse Submenu
 				System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
-				userBrowseMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 3);
+				int userBrowseMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 3);
 
 				switch (userBrowseMenuChoice) {
 				
@@ -122,14 +104,13 @@ public class LibraryApp {
 			
 			case 2: // Search Submenu
 
-				int userSearchMenuChoice;
 				ArrayList<Media> searchResultArr = new ArrayList<>();
 				boolean searchingCatalog = true;
 
 				do {
 					System.out.println(
 							"1. Search by Author / Director\n2. Search by Title (keyword)\n3. Exit To Main Menu");
-					userSearchMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 3);
+					int userSearchMenuChoice = val.integerWithinRange("Enter number: ", scnr, 1, 3);
 
 					switch (userSearchMenuChoice) {
 					
@@ -162,7 +143,9 @@ public class LibraryApp {
 					case 2: // --Search by Title keyword
 						System.out.println("Please enter Title keyword(s): ");
 						String titleSearchString = scnr.nextLine();
+						
 						searchResultArr = searchTitleResults(titleSearchString);
+						
 						if (searchResultArr.size() > 0) {
 							printSearchResults(searchResultArr);
 							userMediaChoice = val.integerInRangeStringToExit(
@@ -170,6 +153,7 @@ public class LibraryApp {
 									"main", scnr, 1, searchResultArr.size());
 						} else
 							break;
+						
 						if (userMediaChoice == -1) { // exit Search submenu
 							searchingCatalog = false;
 						} else { // add to cart
@@ -194,24 +178,27 @@ public class LibraryApp {
 			
 				} while (searchingCatalog);
 
-			case 3:
-				// Return
+			case 3: // Return
+				
 				System.out.println("What would you like to return\n1. Book\n2. Movie");
-				userReturnChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
+				int userReturnChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
 			
 				if (userReturnChoice == 1) {
 					System.out.print("Enter Book Title: ");
-					returnBookTitle = scnr.next();
+					String returnBookTitle = scnr.next();
+					
 					System.out.print("Enter Book Author: ");
-					returnBookAuthor = scnr.next();
-					System.out.print("Enter Book Condition(1-100): ");
-					returnBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					 String returnBookAuthor = scnr.next();
+					
+					 System.out.print("Enter Book Condition(1-100): ");
+					int returnBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
 				
 					for(Book book: bookInventory) {
 						if(returnBookTitle.equals(book.getTitle())) {
 							if (returnBookCondition < 40) {
 								// recycle book
 								bookInventory.remove(book);
+								//****************** new object not needed, just add(book)
 								recycledItems.add(new Book(returnBookTitle, returnBookCondition, Status.INRECYCLED,
 										new ArrayList<String>(Arrays.asList(returnBookAuthor))));
 								System.out.println("Book recycled");
@@ -230,13 +217,16 @@ public class LibraryApp {
 
 				} else if (userReturnChoice == 2) {
 					System.out.print("Enter Movie Title: ");
-					returnMovieTitle = scnr.next();
+					String returnMovieTitle = scnr.next();
+					
 					System.out.print("Enter Movie Director: ");
-					returnMovieDirector = scnr.next();
+					String returnMovieDirector = scnr.next();
+					
 					System.out.print("Enter Movie Condition(1-100): ");
-					returnMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					int returnMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					
 					System.out.println("Enter Movie Run Time");
-					returnMovieRunTime = scnr.nextInt();
+					int returnMovieRunTime = scnr.nextInt();
 				
 					for(Movie movie: movieInventory) {
 						if(returnMovieTitle.equals(movie.getTitle())) {
@@ -260,21 +250,20 @@ public class LibraryApp {
 
 				break;
 				
-			case 4:
-				// Donate Book
-				// Build method in validator class to validate Input
+			case 4: // Donate Book
+				
 				System.out.println("What would you like to donate\n1. Book\n2. Movie");
-				userDonateChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
+				int userDonateChoice = val.integerWithinRange("Enter number: ", scnr, 1, 2);
 			
 				if (userDonateChoice == 1) {
 					System.out.print("Enter Book Title: ");
-					donateBookTitle = scnr.next();
+					String donateBookTitle = scnr.next();
 					System.out.print("Enter Book Author: ");
-					donateBookAuthor = scnr.next();
+					String donateBookAuthor = scnr.next();
 					System.out.print("Enter Book Condition(1-100): ");
-					donateBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					int donateBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
 				
-					if (donateBookCondition < 40) {
+					if (donateBookCondition < 40) { // thank you message or move book donated message out of else
 						// recycle book
 					} else {
 						bookInventory.add(new Book(donateBookTitle, donateBookCondition, Status.ONSHELF,
@@ -284,13 +273,13 @@ public class LibraryApp {
 
 				} else if (userDonateChoice == 2) {
 					System.out.print("Enter Movie Title: ");
-					donateMovieTitle = scnr.next();
+					String donateMovieTitle = scnr.next();
 					System.out.print("Enter Movie Director: ");
-					donateMovieDirector = scnr.next();
+					String donateMovieDirector = scnr.next();
 					System.out.print("Enter Movie Condition(1-100): ");
-					donateMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
+					int donateMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
 					System.out.println("Enter Movie Run Time");
-					donateMovieRunTime = scnr.nextInt();
+					int donateMovieRunTime = scnr.nextInt();
 					
 					if (donateMovieCondition < 40) {
 						// recycle Movie
@@ -397,9 +386,11 @@ public class LibraryApp {
 	// Need to refactor this method and searchTitleResults. It's the same code, need
 	// to pass field variable to search as method parameter. how?
 	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
+		
 		boolean continueSearch = true;
 		ArrayList<Media> searchResultArr = new ArrayList<>();
 		userSearchString = userSearchString.toLowerCase();
+		
 		for (Book book : bookInventory) {
 			if (book.getAuthor().toString().toLowerCase().contains(userSearchString)) {
 				searchResultArr.add(book);
@@ -410,6 +401,7 @@ public class LibraryApp {
 				searchResultArr.add(movie);
 			}
 		}
+		
 		if (searchResultArr.size() < 1) {
 			System.out.println(
 					"Sorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
@@ -417,6 +409,7 @@ public class LibraryApp {
 		} else {
 			continueSearch = false;
 		}
+		
 		return searchResultArr;
 	}
 
@@ -425,9 +418,11 @@ public class LibraryApp {
 	// need
 	// to pass field variable to search as method parameter. how?
 	private static ArrayList<Media> searchTitleResults(String userSearchString) {
+		
 		boolean continueSearch = true;
 		ArrayList<Media> searchResultArr = new ArrayList<>();
 		userSearchString = userSearchString.toLowerCase();
+		
 		for (Book book : bookInventory) {
 			if (book.getTitle().toString().toLowerCase().contains(userSearchString)) {
 				searchResultArr.add(book);
@@ -438,6 +433,7 @@ public class LibraryApp {
 				searchResultArr.add(movie);
 			}
 		}
+		
 		if (searchResultArr.size() < 1) {
 			System.out.println(
 					"Sorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
@@ -445,6 +441,7 @@ public class LibraryApp {
 		} else {
 			continueSearch = false;
 		}
+		
 		return searchResultArr;
 	}
 

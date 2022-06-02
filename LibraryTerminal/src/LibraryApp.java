@@ -251,9 +251,9 @@ public class LibraryApp {
 
 				} else if (userDonateChoice == 2) {
 					System.out.print("Enter Movie Title: ");
-					String donateMovieTitle = scnr.next();
+					String donateMovieTitle = scnr.nextLine();
 					System.out.print("Enter Movie Director: ");
-					String donateMovieDirector = scnr.next();
+					String donateMovieDirector = scnr.nextLine();
 					System.out.print("Enter Movie Condition(1-100): ");
 					int donateMovieCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
 					System.out.println("Enter Movie Run Time");

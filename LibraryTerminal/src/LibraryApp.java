@@ -5,22 +5,18 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class LibraryApp {
+
 	static Validator val = new Validator();
 	static Scanner scnr = new Scanner(System.in);
 	static Cart cart = new Cart();
-	static ArrayList<Movie> movieInventory = new ArrayList<>();
-	static ArrayList<Book> bookInventory = new ArrayList<>();
+	static MediaDatabase db = new MediaDatabase();
+	static ArrayList<Movie> movieInventory = db.getMovieList();
+	static ArrayList<Book> bookInventory = db.getBookList();
 	static Stack<Media> recycledItems = new Stack<Media>();
 	static Stack<Media> returnedItems = new Stack<Media>();
 
 	public static void main(String[] args) {
 
-		movieInventory.add(new Movie("Move1", 100, Status.ONSHELF, "Joe Brown", 120)); // test data
-		movieInventory.add(new Movie("Move2", 100, Status.ONSHELF, "jim Brown", 100)); // test data
-		bookInventory.add(new Book("Book1", 100, Status.ONSHELF,
-				new ArrayList<String>(Arrays.asList("Mike Brown", "Kyle Johns")))); // test data
-		bookInventory.add(new Book("Book2", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Billy Brown")))); // test
-																														// data
 		System.out.println("Welcome to the library");
 
 		boolean userInLibrary = true;
@@ -187,18 +183,19 @@ public class LibraryApp {
 
 				if (userReturnChoice == 1) {
 					System.out.print("Enter Book Title: ");
-					String returnBookTitle = scnr.next();
+					String returnBookTitle = scnr.nextLine();
 
 					for (Book book : bookInventory) {
 						if (returnBookTitle.equals(book.getTitle()) && book.getMediaStatus() == Status.CHECKEDOUT) {
-							if(book.getCondition() < 1) {
+							if (book.getCondition() < 1) {
 								recycleBook(book);
-								
-							}else {
-							book.setMediaStatus(Status.INRETURNS);
-							returnedItems.add(book);
+								break;
+							} else {
+								book.setMediaStatus(Status.INRETURNS);
+								returnedItems.add(book);
+								System.out.println("Book returned");
+								break;
 							}
-							System.out.println("Book returned");
 						} else {
 							System.out.println("Book not in our catalog.");
 
@@ -207,16 +204,18 @@ public class LibraryApp {
 
 				} else if (userReturnChoice == 2) {
 					System.out.print("Enter Movie Title: ");
-					String returnMovieTitle = scnr.next();
+					String returnMovieTitle = scnr.nextLine();
 
 					for (Movie movie : movieInventory) {
 						if (returnMovieTitle.equals(movie.getTitle()) && movie.getMediaStatus() == Status.CHECKEDOUT) {
-							if(movie.getCondition() < 1) {
+							if (movie.getCondition() < 1) {
 								recycleMovie(movie);
-							}else {
-							movie.setMediaStatus(Status.INRETURNS);
-							returnedItems.add(movie);
-							System.out.println("Movie returned");
+								break;
+							} else {
+								movie.setMediaStatus(Status.INRETURNS);
+								returnedItems.add(movie);
+								System.out.println("Movie returned");
+								break;
 							}
 
 						} else {
@@ -234,9 +233,9 @@ public class LibraryApp {
 
 				if (userDonateChoice == 1) {
 					System.out.print("Enter Book Title: ");
-					String donateBookTitle = scnr.next();
+					String donateBookTitle = scnr.nextLine();
 					System.out.print("Enter Book Author: ");
-					String donateBookAuthor = scnr.next();
+					String donateBookAuthor = scnr.nextLine();
 					System.out.print("Enter Book Condition(1-100): ");
 					int donateBookCondition = val.integerWithinRange("Enter number: ", scnr, 1, 100);
 
@@ -303,6 +302,7 @@ public class LibraryApp {
 
 			case 6:
 				// Exit
+				// add method to go through return stack and return books to shelf or recycle
 				userInLibrary = false;
 				break;
 
@@ -444,11 +444,13 @@ public class LibraryApp {
 		}
 		cart.getCart().clear();
 	}
+
 	public static void printCheckedOutItems() {
 		System.out.println("");
-		for(Book book : bookInventory) {
+		for (Book book : bookInventory) {
 			System.out.println();
 		}
-		for(Movie movie : movieInventory){}
+		for (Movie movie : movieInventory) {
+		}
 	}
 }

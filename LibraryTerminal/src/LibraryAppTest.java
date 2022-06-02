@@ -40,5 +40,32 @@ class LibraryAppTest {
 		Media actualMedia = db.getBook(1);
 		assertEquals(Book.class, actualMedia.getClass());
 	}
+	
+	@Test
+	void getMovieReturnsMovie() {
+		MediaDatabase db = new MediaDatabase();
+		Media actualMedia = db.getMovie(1);
+		assertEquals(Movie.class, actualMedia.getClass());
+	}
+	@Test
+	void getMovieTitleReturnsTitle() {
+		MediaDatabase db = new MediaDatabase();
+		Media actualMedia = db.getMovie(1);
+		assertEquals("The Shawshank Redemption", actualMedia.getTitle());
+	}
+	
+	@Test
+	void getBookListsWorks() {
+		MediaDatabase db = new MediaDatabase();
+		ArrayList<Book> testBookArray = db.getBookList();
+		assertTrue(testBookArray.size() > 0);
+	}
+	
+	@Test
+	void getMovieListsWorks() {
+		MediaDatabase db = new MediaDatabase();
+		ArrayList<Movie> testBookArray = db.getMovieList();
+		assertTrue(testBookArray.size() > 0);
+	}
 
 }

@@ -303,6 +303,7 @@ public class LibraryApp {
 			case 6:
 				// Exit
 				// add method to go through return stack and return books to shelf or recycle
+				returnsStackCheck(returnedItems);
 				userInLibrary = false;
 				break;
 
@@ -452,5 +453,20 @@ public class LibraryApp {
 		}
 		for (Movie movie : movieInventory) {
 		}
+	}
+	public static void returnsStackCheck(Stack<Media>returns) {
+		for(Media media : returns) {
+			if(media.getClass().equals(Book.class)) {
+				media.setMediaStatus(Status.ONSHELF);
+				System.out.printf("%s returned to shelf", media.getTitle());
+				
+			}else if (media.getClass().equals(Movie.class)) {
+				media.setMediaStatus(Status.ONSHELF);
+				System.out.printf("%s returned to shelf", media.getTitle());
+			}
+		}
+		returns.clear();
+		System.out.println("Return Stack Clear");
+		
 	}
 }

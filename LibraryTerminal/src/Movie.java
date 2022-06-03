@@ -5,12 +5,15 @@ public class Movie extends Media{
 	public String getDirector() {
 		return director;
 	}
+	
 	public void setDirector(String director) {
 		this.director = director;
 	}
+	
 	public int getRunTimeMin() {
 		return runTimeMin;
 	}
+	
 	public void setRunTimeMin(int runTimeMin) {
 		this.runTimeMin = runTimeMin;
 	}

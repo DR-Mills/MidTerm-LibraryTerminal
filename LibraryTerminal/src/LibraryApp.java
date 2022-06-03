@@ -393,6 +393,7 @@ public class LibraryApp {
 	
 	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
 
+		@SuppressWarnings("unused")
 		boolean continueSearch = true;
 		ArrayList<Media> searchResultArr = new ArrayList<>();
 		userSearchString = userSearchString.toLowerCase();
@@ -422,6 +423,7 @@ public class LibraryApp {
 
 	private static ArrayList<Media> searchTitleResults(String userSearchString) {
 
+		@SuppressWarnings("unused")
 		boolean continueSearch = true;
 		ArrayList<Media> searchResultArr = new ArrayList<>();
 		userSearchString = userSearchString.toLowerCase();
@@ -459,10 +461,10 @@ public class LibraryApp {
 
 	public static void printCheckedOutItems() {
 		System.out.println("");
-		for (Book book : bookInventory) {
+		for (@SuppressWarnings("unused") Book book : bookInventory) {
 			System.out.println();
 		}
-		for (Movie movie : movieInventory) {
+		for (@SuppressWarnings("unused") Movie movie : movieInventory) {
 		}
 	}
 

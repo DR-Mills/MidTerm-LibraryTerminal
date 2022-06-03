@@ -31,73 +31,8 @@ public class LibraryApp {
 			switch (userMainMenuChoice) {
 
 			case 1: // Browse Submenu
-				System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
-				int userBrowseMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
-
-				switch (userBrowseMenuChoice) {
-
-				case 1: // --Browse Books
-
-					boolean browsingBooks = true;
-
-					do {
-						printBooks(bookInventory);
-						int browseBookChoice = val.integerInRangeStringToExit(
-								"\nEnter book number to add to cart (or type \"main\" to return to main menu): ",
-								"main", scnr, 1, bookInventory.size());
-
-						if (browseBookChoice == -1) { // exit browse submenu
-							browsingBooks = false;
-						} else { // add to cart
-							addToCart(bookInventory, browseBookChoice);
-							boolean continueBrowse = val.userContinueYorN("\nContinue Browsing? (y/n): ", scnr);
-
-							if (continueBrowse) {
-								browsingBooks = true;
-							} else {
-								browsingBooks = false;
-							}
-						}
-					} while (browsingBooks);
-
-					break;
-
-				case 2: // --Browse Movies
-
-					boolean browsingMovies = true;
-
-					do {
-						printMovies(movieInventory);
-						int browseMovieChoice = val.integerInRangeStringToExit(
-								"\nEnter movie number to add to cart (or type \"main\" to return to main menu): ",
-								"main", scnr, 1, movieInventory.size());
-
-						if (browseMovieChoice == -1) { // exit browse submenu
-							browsingMovies = false;
-						} else { // add to cart
-							addToCart(movieInventory, browseMovieChoice);
-							boolean continueBrowse = val.userContinueYorN("\nContinue Browsing? (y/n): ", scnr);
-
-							if (continueBrowse) {
-								browsingMovies = true;
-							} else {
-								browsingMovies = false;
-							}
-						}
-					} while (browsingMovies);
-
-					break;
-
-				case 3: // --Exit back to Main Menu
-
-					break;
-
-				default:
-
-					throw new IllegalArgumentException("Unexpected value: " + userBrowseMenuChoice);
-
-				}
-				break; // end of Browse Submenu
+				browseSubmenu();
+				break;
 
 			case 2: // Search Submenu
 
@@ -344,6 +279,92 @@ public class LibraryApp {
 
 	}
 
+	
+	private static void browseSubmenu() {
+		System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
+		int userBrowseMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
+
+		switch (userBrowseMenuChoice) {
+
+		case 1: // --Browse Books
+			browse(bookInventory,
+					"\nEnter book number to add to cart (or type \"main\" to return to main menu): ", "main");
+			break;
+
+		case 2: // --Browse Movies
+			browse(movieInventory,
+					"\nEnter movie number to add to cart (or type \"main\" to return to main menu): ", "main");
+			break;
+
+		case 3: // --Exit back to Main Menu
+
+			break;
+
+		default:
+
+			throw new IllegalArgumentException("Unexpected value: " + userBrowseMenuChoice);
+
+		}
+	}
+
+	
+	private static void browse(ArrayList<? extends Media> inventory, String choiceMsg, String breakMsg) {
+		boolean browsingBooks = true;
+
+		do {
+			printInventoryList(inventory);
+			int browseBookChoice = val.integerInRangeStringToExit(choiceMsg, breakMsg, scnr, 1, inventory.size());
+
+			if (browseBookChoice == -1) { // exit browse submenu
+				browsingBooks = false;
+			} else { // add to cart
+				addToCart(inventory, browseBookChoice);
+				boolean continueBrowse = val.userContinueYorN("\nContinue Browsing? (y/n): ", scnr);
+
+				if (continueBrowse) {
+					browsingBooks = true;
+				} else {
+					browsingBooks = false;
+				}
+			}
+		} while (browsingBooks);
+	}
+
+	
+	private static void printInventoryList(ArrayList<? extends Media> inventory) {
+		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Title", "Author(s) / Director", "Status");
+		System.out
+		.println("==========================================================================================");
+		if (inventory.get(0).getClass() == Book.class) {
+			for (int i = 0; i < inventory.size(); i++) {
+				String author = (String) inventory.get(i).getAuthor().toString().subSequence(1,
+						inventory.get(i).getAuthor().toString().length() - 1);
+				System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, inventory.get(i).getTitle(), author,
+						inventory.get(i).getMediaStatus());
+			}
+		}
+		if (inventory.get(0).getClass() == Movie.class) {
+			for (int i = 0; i < inventory.size(); i++) {
+				System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, inventory.get(i).getTitle(),
+						inventory.get(i).getDirector(), inventory.get(i).getMediaStatus());
+			}
+		}
+	}
+	
+	
+	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
+		Media media = list.get(itemChoice - 1);
+		if (media.getMediaStatus().equals(Status.ONSHELF)) {
+			media.setMediaStatus(Status.INCART);
+			cart.addToCart(media);
+			System.out.println(media.getTitle() + " added to cart.");
+
+		} else {
+			System.out.print("Sorry Selection is not available");
+		}
+	}
+	
+	
 	private static void throwMediaInRecycleBin() {
 		for (int i = 0; i < recycledItems.size(); i++) {
 			recycledItems.pop();
@@ -364,27 +385,6 @@ public class LibraryApp {
 		System.out.println("\nBook recycled");
 	}
 
-	private static void printBooks(ArrayList<Book> bookInventory) {
-		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Book Title", "Author(s)", "Status");
-		System.out
-				.println("==========================================================================================");
-		for (int i = 0; i < bookInventory.size(); i++) {
-			String author = (String) bookInventory.get(i).getAuthor().toString().subSequence(1,
-					bookInventory.get(i).getAuthor().toString().length() - 1);
-			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, bookInventory.get(i).getTitle(), author,
-					bookInventory.get(i).getMediaStatus());
-		}
-	}
-
-	private static void printMovies(ArrayList<Movie> movieInventory) {
-		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Movie Title", "Director", "Status");
-		System.out
-				.println("==========================================================================================");
-		for (int i = 0; i < movieInventory.size(); i++) {
-			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, movieInventory.get(i).getTitle(),
-					movieInventory.get(i).getDirector(), movieInventory.get(i).getMediaStatus());
-		}
-	}
 
 	private static void printSearchResults(ArrayList<Media> list) {
 		list.sort(Comparator.comparing(Media::getTitle));
@@ -402,17 +402,6 @@ public class LibraryApp {
 		}
 	}
 
-	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
-		Media media = list.get(itemChoice - 1);
-		if (media.getMediaStatus().equals(Status.ONSHELF)) {
-			media.setMediaStatus(Status.INCART);
-			cart.addToCart(media);
-			System.out.println(media.getTitle() + " added to cart.");
-
-		} else {
-			System.out.print("Sorry Selection is not available");
-		}
-	}
 
 	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
 

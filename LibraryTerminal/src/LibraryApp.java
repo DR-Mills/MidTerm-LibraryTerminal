@@ -284,6 +284,7 @@ public class LibraryApp {
 					if (cart.getCart().size() > 0) {
 						System.out.println("\nYour cart currently includes: ");
 						System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
+						System.out.println("============================================================");
 						for (int i = 0; i < cart.getCart().size(); i++) {
 							System.out.printf("%-5s%-45s%-20s%n", i + 1, cart.getCart().get(i).getTitle(),
 									cart.getCart().get(i).getClass().toString().substring(6));
@@ -344,6 +345,7 @@ public class LibraryApp {
 
 	private static void printBooks(ArrayList<Book> bookInventory) {
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Book Title", "Author(s)", "Status");
+		System.out.println("==========================================================================================");
 		for (int i = 0; i < bookInventory.size(); i++) {
 			String author = (String) bookInventory.get(i).getAuthor().toString().subSequence(1,
 					bookInventory.get(i).getAuthor().toString().length() - 1);
@@ -353,6 +355,7 @@ public class LibraryApp {
 
 	private static void printMovies(ArrayList<Movie> movieInventory) {
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Movie Title", "Director", "Status");
+		System.out.println("==========================================================================================");
 		for (int i = 0; i < movieInventory.size(); i++) {
 			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, movieInventory.get(i).getTitle(),
 					movieInventory.get(i).getDirector(), movieInventory.get(i).getMediaStatus());
@@ -448,6 +451,7 @@ public class LibraryApp {
 	private static void checkout() {
 		System.out.println("\nCheckout Successful, here is your receipt: ");
 		System.out.printf("%-40s%-15s%-15s%n", "Title", "Due Date", "Condition");
+		System.out.println("================================================================================");
 		for (Media media : cart.getCart()) {
 			media.setMediaStatus(Status.CHECKEDOUT);
 			media.setCondition(media.getCondition() - 1);

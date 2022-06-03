@@ -20,11 +20,7 @@ public class Movie extends Media{
 		this.director = director;
 		this.runTimeMin = runTimeMin;
 	}
-	@Override
-	public void consume() {
-		// TODO Auto-generated method stub
-		
-	}
+
 	@Override
 	protected String getAuthor() {
 		// returns director

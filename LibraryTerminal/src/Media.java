@@ -1,13 +1,31 @@
-import java.util.ArrayList;
+import java.time.LocalDate;
+
 
 abstract class Media {
 
-	String title;
+	private String title;
+	private Status mediaStatus = Status.ONSHELF;
+	private int condition;
+	private LocalDate dueDate;
 
-//	enum status { CHECKEDOUT, ONSHELF, LOST, InCart};
-	//enum variable for media status
-	Status mediaStatus = Status.ONSHELF;
 	
+	public Media(String title, int condition, Status mediaStatus) {
+		this.title = title;
+		this.condition = condition;
+		this.mediaStatus = mediaStatus;
+	}
+
+	
+	public LocalDate getDueDate() {
+		return dueDate;
+	}
+
+
+	public void setDueDate(LocalDate date) {
+		this.dueDate = date;
+	}
+
+
 	public Status getMediaStatus() {
 		return mediaStatus;
 	}
@@ -18,19 +36,6 @@ abstract class Media {
 	}
 
 
-	int condition;
-	// Add date object. Calendar.
-	
-	
-	public abstract void consume();
-	// read for book, watch for movie, listen for audiobooks
-
-
-	public Media(String title, int condition, Status mediaStatus) {
-		this.title = title;
-		this.condition = condition;
-		this.mediaStatus = mediaStatus;
-	}
 
 
 	public String getTitle() {

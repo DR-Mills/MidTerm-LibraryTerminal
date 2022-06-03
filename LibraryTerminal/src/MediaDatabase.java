@@ -26,7 +26,7 @@ public class MediaDatabase {
 	
 	public Book getBook(int i) {
 
-		int condition = 100;
+		int condition = 1;
 		Status MediaStatus = Status.ONSHELF;
 
 		switch (i) {

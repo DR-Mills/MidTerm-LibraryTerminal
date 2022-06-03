@@ -26,7 +26,7 @@ public class MediaDatabase {
 	
 	public Book getBook(int i) {
 
-		int condition = 1;
+		int condition = 100;
 		Status MediaStatus = Status.ONSHELF;
 
 		switch (i) {
@@ -43,7 +43,7 @@ public class MediaDatabase {
 		case 3:
 			String title003 = "Pet Sematary";
 			ArrayList<String> creator003 = new ArrayList<String>(Arrays.asList("Stephen King"));
-			return new Book(title003, condition, MediaStatus, creator003);
+			return new Book(title003, 1, MediaStatus, creator003);
 
 		case 4:
 			String title004 = "Harry Potter and the Deathly Hallows";
@@ -58,7 +58,7 @@ public class MediaDatabase {
 		case 6:
 			String title006 = "It";
 			ArrayList<String> creator006 = new ArrayList<String>(Arrays.asList("Stephen King"));
-			return new Book(title006, condition, MediaStatus, creator006);
+			return new Book(title006, 5, MediaStatus, creator006);
 
 		case 7:
 			String title007 = "Where the Crawdads Sing";
@@ -78,7 +78,7 @@ public class MediaDatabase {
 		case 10:
 			String title010 = "Rich Dad Poor Dad";
 			ArrayList<String> creator010 = new ArrayList<String>(Arrays.asList("Robert T. Kiyosaki"));
-			return new Book(title010, condition, MediaStatus, creator010);
+			return new Book(title010, 1, MediaStatus, creator010);
 
 		case 11:
 			String title011 = "Head First Java, 2nd Edition";
@@ -122,19 +122,19 @@ public class MediaDatabase {
 			String title005 = "The Matrix";
 			String director005 = "Lana & Lilly Wachowski";
 			int runtime005 = 136;
-			return new Movie(title005, condition, MediaStatus, director005, runtime005);
+			return new Movie(title005, 5, MediaStatus, director005, runtime005);
 
 		case 6:
 			String title006 = "The Silence of the Lambs";
 			String director006 = "Jonathan Demme";
 			int runtime006 = 118;
-			return new Movie(title006, condition, MediaStatus, director006, runtime006);
+			return new Movie(title006, 1, MediaStatus, director006, runtime006);
 
 		case 7:
 			String title007 = "The Terminator 2";
 			String director007 = "James Cameron";
 			int runtime007 = 137;
-			return new Movie(title007, condition, MediaStatus, director007, runtime007);
+			return new Movie(title007, 1, MediaStatus, director007, runtime007);
 		}
 		return null;
 	}

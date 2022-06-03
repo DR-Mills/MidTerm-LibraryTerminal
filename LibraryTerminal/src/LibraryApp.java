@@ -235,10 +235,10 @@ public class LibraryApp {
 				if (userDonateChoice == 1) {
 					System.out.print("\nEnter Book Title: ");
 					String donateBookTitle = scnr.nextLine();
-					
+
 					System.out.print("\nEnter Book Author: ");
 					String donateBookAuthor = scnr.nextLine();
-					
+
 					System.out.print("\nEnter Book Condition(1-100): ");
 					int donateBookCondition = val.integerWithinRange("\nEnter number: ", scnr, 1, 100);
 
@@ -255,13 +255,13 @@ public class LibraryApp {
 				} else if (userDonateChoice == 2) {
 					System.out.print("\nEnter Movie Title: ");
 					String donateMovieTitle = scnr.nextLine();
-					
+
 					System.out.print("\nEnter Movie Director: ");
 					String donateMovieDirector = scnr.nextLine();
-					
+
 					System.out.print("\nEnter Movie Condition(1-100): ");
 					int donateMovieCondition = val.integerWithinRange("\nEnter number: ", scnr, 1, 100);
-					
+
 					System.out.println("\nEnter Movie Run Time");
 					int donateMovieRunTime = scnr.nextInt();
 
@@ -280,8 +280,8 @@ public class LibraryApp {
 
 			case 5:// Checkout
 				boolean cartIsUnverified = true;
-					do {
-						if (cart.getCart().size() > 0) {
+				do {
+					if (cart.getCart().size() > 0) {
 						System.out.println("\nYour cart currently includes: ");
 						System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
 						for (int i = 0; i < cart.getCart().size(); i++) {
@@ -300,11 +300,11 @@ public class LibraryApp {
 							cart.getCart().remove(checkoutOption - 1);
 						}
 
-						} else {
-							cartIsUnverified = false;
-							System.out.println("\nYour cart is empty. Please add an item.");
-				}
-			} while (cartIsUnverified);
+					} else {
+						cartIsUnverified = false;
+						System.out.println("\nYour cart is empty. Please add an item.");
+					}
+				} while (cartIsUnverified);
 				break;
 
 			case 6: // Exit
@@ -342,30 +342,28 @@ public class LibraryApp {
 		System.out.println("\nBook recycled");
 	}
 
-
 	private static void printBooks(ArrayList<Book> bookInventory) {
-		System.out.printf("%-5s%-45s%-30s%n", "No.", "Book Title", "Author(s)");
+		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Book Title", "Author(s)", "Status");
 		for (int i = 0; i < bookInventory.size(); i++) {
 			String author = (String) bookInventory.get(i).getAuthor().toString().subSequence(1,
 					bookInventory.get(i).getAuthor().toString().length() - 1);
-			System.out.printf("%-5s%-45s%s%n", i + 1, bookInventory.get(i).getTitle(), author);
+			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, bookInventory.get(i).getTitle(), author, bookInventory.get(i).getMediaStatus());
 		}
 	}
 
-	
 	private static void printMovies(ArrayList<Movie> movieInventory) {
-		System.out.printf("%-5s%-45s%-30s%n", "No.", "Movie Title", "Author(s)");
+		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Movie Title", "Director", "Status");
 		for (int i = 0; i < movieInventory.size(); i++) {
-			System.out.printf("%-5s%-45s%s%n", i + 1, movieInventory.get(i).getTitle(),
-					movieInventory.get(i).getDirector());
+			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, movieInventory.get(i).getTitle(),
+					movieInventory.get(i).getDirector(), movieInventory.get(i).getMediaStatus());
 		}
 	}
 
-	
 	private static void printSearchResults(ArrayList<Media> list) {
 		list.sort(Comparator.comparing(Media::getTitle));
 		System.out.printf("%-5s%-45s%-30s%-15s%s%n", "No.", "Title", "Author(s) / Director", "Media", "Status");
-		System.out.println("======================================================================================================");
+		System.out.println(
+				"======================================================================================================");
 		for (int i = 0; i < list.size(); i++) {
 			String author = list.get(i).getAuthor().toString();
 			if (author.contains("[")) {
@@ -377,7 +375,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
 		Media media = list.get(itemChoice - 1);
 		if (media.getMediaStatus().equals(Status.ONSHELF)) {
@@ -390,7 +387,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
 
 		@SuppressWarnings("unused")
@@ -411,7 +407,7 @@ public class LibraryApp {
 
 		if (searchResultArr.size() < 1) {
 			System.out.println(
-					"Sorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
+					"\nSorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
 			continueSearch = true;
 		} else {
 			continueSearch = false;
@@ -419,7 +415,6 @@ public class LibraryApp {
 
 		return searchResultArr;
 	}
-
 
 	private static ArrayList<Media> searchTitleResults(String userSearchString) {
 
@@ -441,7 +436,7 @@ public class LibraryApp {
 
 		if (searchResultArr.size() < 1) {
 			System.out.println(
-					"Sorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
+					"\nSorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
 			continueSearch = true;
 		} else {
 			continueSearch = false;
@@ -451,20 +446,25 @@ public class LibraryApp {
 	}
 
 	private static void checkout() {
+		System.out.println("\nCheckout Successful, here is your receipt: ");
+		System.out.printf("%-40s%-15s%-15s%n", "Title", "Due Date", "Condition");
 		for (Media media : cart.getCart()) {
 			media.setMediaStatus(Status.CHECKEDOUT);
 			media.setCondition(media.getCondition() - 1);
 			media.setDueDate(LocalDate.now().plusDays(14));
+			System.out.printf("%-40s%-15s%-15s%n", media.getTitle(), media.getDueDate(), media.getCondition());
 		}
 		cart.getCart().clear();
 	}
 
 	public static void printCheckedOutItems() {
 		System.out.println("");
-		for (@SuppressWarnings("unused") Book book : bookInventory) {
+		for (@SuppressWarnings("unused")
+		Book book : bookInventory) {
 			System.out.println();
 		}
-		for (@SuppressWarnings("unused") Movie movie : movieInventory) {
+		for (@SuppressWarnings("unused")
+		Movie movie : movieInventory) {
 		}
 	}
 

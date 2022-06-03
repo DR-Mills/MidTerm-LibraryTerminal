@@ -3,8 +3,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Stack;
-
 import org.junit.jupiter.api.Test;
 
 class LibraryAppTest {
@@ -49,6 +47,7 @@ class LibraryAppTest {
 		Media actualMedia = db.getMovie(1);
 		assertEquals(Movie.class, actualMedia.getClass());
 	}
+	
 	@Test
 	void getMovieTitleReturnsTitle() {
 		MediaDatabase db = new MediaDatabase();
@@ -69,6 +68,7 @@ class LibraryAppTest {
 		ArrayList<Movie> testBookArray = db.getMovieList();
 		assertTrue(testBookArray.size() > 0);
 	}
+	
 	@Test
 	void dateAdds14Days() {
 		Book book = new Book("Blah", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Mike")));

@@ -181,13 +181,24 @@ public class LibraryApp {
 
 				System.out.println("\nWhat would you like to return\n1. Book\n2. Movie");
 				int userReturnChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 2);
+				int itemNotFound = 0;
 
 				if (userReturnChoice == 1) {
 					System.out.print("\nEnter Book Title: ");
 					String returnBookTitle = scnr.nextLine();
 
 					for (Book book : bookInventory) {
-						if (returnBookTitle.equals(book.getTitle()) && book.getMediaStatus() == Status.CHECKEDOUT) {
+						if (!returnBookTitle.equalsIgnoreCase(book.getTitle())) {
+							itemNotFound++;
+						}
+						if (returnBookTitle.equalsIgnoreCase(book.getTitle())
+								&& book.getMediaStatus() != Status.CHECKEDOUT) {
+							System.out.println(
+									"That title isn't checked out yet. It's currently " + book.getMediaStatus() + ". ");
+							break;
+						}
+						if (returnBookTitle.equalsIgnoreCase(book.getTitle())
+								&& book.getMediaStatus() == Status.CHECKEDOUT) {
 							if (book.getCondition() < 1) {
 								recycleBook(book);
 								break;
@@ -197,9 +208,9 @@ public class LibraryApp {
 								System.out.println("\nBook returned");
 								break;
 							}
-						} else {
+						}
+						if (itemNotFound == bookInventory.size()) {
 							System.out.println("\nBook not in our catalog.");
-
 						}
 					}
 
@@ -208,7 +219,17 @@ public class LibraryApp {
 					String returnMovieTitle = scnr.nextLine();
 
 					for (Movie movie : movieInventory) {
-						if (returnMovieTitle.equals(movie.getTitle()) && movie.getMediaStatus() == Status.CHECKEDOUT) {
+						if (!returnMovieTitle.equalsIgnoreCase(movie.getTitle())) {
+							itemNotFound++;
+						}
+						if (returnMovieTitle.equalsIgnoreCase(movie.getTitle())
+								&& movie.getMediaStatus() != Status.CHECKEDOUT) {
+							System.out.println("That title isn't checked out yet. It's currently "
+									+ movie.getMediaStatus() + ". ");
+							break;
+						}
+						if (returnMovieTitle.equalsIgnoreCase(movie.getTitle())
+								&& movie.getMediaStatus() == Status.CHECKEDOUT) {
 							if (movie.getCondition() < 1) {
 								recycleMovie(movie);
 								break;
@@ -218,8 +239,8 @@ public class LibraryApp {
 								System.out.println("\nMovie returned");
 								break;
 							}
-
-						} else {
+						}
+						if (itemNotFound == movieInventory.size()) {
 							System.out.println("\nMovie not in our catalog.");
 						}
 					}
@@ -345,17 +366,20 @@ public class LibraryApp {
 
 	private static void printBooks(ArrayList<Book> bookInventory) {
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Book Title", "Author(s)", "Status");
-		System.out.println("==========================================================================================");
+		System.out
+				.println("==========================================================================================");
 		for (int i = 0; i < bookInventory.size(); i++) {
 			String author = (String) bookInventory.get(i).getAuthor().toString().subSequence(1,
 					bookInventory.get(i).getAuthor().toString().length() - 1);
-			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, bookInventory.get(i).getTitle(), author, bookInventory.get(i).getMediaStatus());
+			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, bookInventory.get(i).getTitle(), author,
+					bookInventory.get(i).getMediaStatus());
 		}
 	}
 
 	private static void printMovies(ArrayList<Movie> movieInventory) {
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Movie Title", "Director", "Status");
-		System.out.println("==========================================================================================");
+		System.out
+				.println("==========================================================================================");
 		for (int i = 0; i < movieInventory.size(); i++) {
 			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, movieInventory.get(i).getTitle(),
 					movieInventory.get(i).getDirector(), movieInventory.get(i).getMediaStatus());
@@ -477,12 +501,12 @@ public class LibraryApp {
 			if (media.getClass().equals(Book.class)) {
 				media.setMediaStatus(Status.ONSHELF);
 				media.setDueDate(null);
-				System.out.printf("%s returned to shelf", media.getTitle());
+				System.out.printf("%s returned to shelf\n", media.getTitle());
 
 			} else if (media.getClass().equals(Movie.class)) {
 				media.setMediaStatus(Status.ONSHELF);
 				media.setDueDate(null);
-				System.out.printf("%s returned to shelf", media.getTitle());
+				System.out.printf("%s returned to shelf\n", media.getTitle());
 			}
 		}
 		returns.clear();

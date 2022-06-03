@@ -67,5 +67,12 @@ class LibraryAppTest {
 		ArrayList<Movie> testBookArray = db.getMovieList();
 		assertTrue(testBookArray.size() > 0);
 	}
+	@Test
+	void dateAdds14Days() {
+		Book book = new Book("Blah", 100, Status.ONSHELF, new ArrayList<String>(Arrays.asList("Mike")));
+		System.out.println(book.getDueDate());
+		book.setDueDate(LocalDate.now().plusDays(14));
+		assertEquals (LocalDate.now().plusDays(14), book.getDueDate());
+	}
 
 }

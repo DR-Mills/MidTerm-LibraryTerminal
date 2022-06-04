@@ -34,7 +34,7 @@ public class LibraryApp {
 				browseSubmenu();
 				break;
 
-			case 2: // Search Sub-menu
+			case 2: // Search Sub-menu 
 				searchSubmenu();
 				break;
 
@@ -205,8 +205,6 @@ public class LibraryApp {
 
 	}
 
-	
-
 	private static void browseSubmenu() {
 		System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
 		int userBrowseMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
@@ -234,7 +232,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void browse(ArrayList<? extends Media> inventory, String choiceMsg, String breakMsg) {
 		boolean stillBrowsing = true;
 
@@ -291,23 +288,21 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void searchSubmenu() {
 		boolean searchingCatalog = true;
-		
+
 		do {
-			System.out.println(
-					"\n1. Search by Author / Director\n2. Search by Title (keyword)\n3. Exit To Main Menu");
+			System.out.println("\n1. Search by Author / Director\n2. Search by Title (keyword)\n3. Exit To Main Menu");
 			int userSearchMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
 
 			switch (userSearchMenuChoice) {
 
 			case 1: // --Search by Author/Director
-				search("\nPlease enter Author / Director name: ", "creator");
+				searchingCatalog = search("\nPlease enter Author / Director name: ", "creator");
 				break;
 
 			case 2: // --Search by Title keyword
-				search("\nPlease enter Title keyword(s): ", "title");
+				searchingCatalog = search("\nPlease enter Title keyword(s): ", "title");
 				break;
 
 			case 3: // Exit back to Main menu
@@ -321,8 +316,8 @@ public class LibraryApp {
 		} while (searchingCatalog);
 	}
 
-	private static void search(String searchMsg, String searchBy) {
-		boolean searchingCatalog;
+	private static boolean search(String searchMsg, String searchBy) {
+		boolean searchingCatalog = true;
 		int userMediaChoice;
 		System.out.println(searchMsg);
 		String userSearchString = scnr.nextLine();
@@ -340,7 +335,7 @@ public class LibraryApp {
 			} else { // add to cart
 				addToCart(searchResultArr, userMediaChoice);
 				boolean continueSearch = val.userContinueYorN("\nContinue Searching? (y/n): ", scnr);
-				
+
 				if (continueSearch) {
 					searchingCatalog = true;
 				} else {
@@ -348,8 +343,9 @@ public class LibraryApp {
 				}
 			}
 		}
+		return searchingCatalog;
 	}
-	
+
 	private static void throwMediaInRecycleBin() {
 		for (int i = 0; i < recycledItems.size(); i++) {
 			recycledItems.pop();

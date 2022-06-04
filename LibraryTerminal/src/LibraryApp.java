@@ -30,86 +30,12 @@ public class LibraryApp {
 
 			switch (userMainMenuChoice) {
 
-			case 1: // Browse Submenu
+			case 1: // Browse Sub-menu
 				browseSubmenu();
 				break;
 
-			case 2: // Search Submenu
-
-				ArrayList<Media> searchResultArr = new ArrayList<>();
-				boolean searchingCatalog = true;
-
-				do {
-					System.out.println(
-							"\n1. Search by Author / Director\n2. Search by Title (keyword)\n3. Exit To Main Menu");
-					int userSearchMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
-
-					switch (userSearchMenuChoice) {
-
-					case 1: // --Search by Author/Director
-						int userMediaChoice;
-						System.out.println("\nPlease enter Author / Director name: ");
-						String authorSearchString = scnr.nextLine();
-						searchResultArr = searchAuthorResults(authorSearchString);
-						if (searchResultArr.size() > 0) {
-							printSearchResults(searchResultArr);
-							userMediaChoice = val.integerInRangeStringToExit(
-									"\nEnter the number of the book or movie to add to cart (or type \"main\" to return to main menu): ",
-									"main", scnr, 1, searchResultArr.size());
-						} else
-							break;
-						if (userMediaChoice == -1) { // exit Search submenu
-							searchingCatalog = false;
-						} else { // add to cart
-							addToCart(searchResultArr, userMediaChoice);
-							boolean continueSearch = val.userContinueYorN("\nContinue Searching? (y/n): ", scnr);
-							if (continueSearch) {
-								searchingCatalog = true;
-							} else {
-								searchingCatalog = false;
-							}
-						}
-
-						break;
-
-					case 2: // --Search by Title keyword
-						System.out.println("\nPlease enter Title keyword(s): ");
-						String titleSearchString = scnr.nextLine();
-
-						searchResultArr = searchTitleResults(titleSearchString);
-
-						if (searchResultArr.size() > 0) {
-							printSearchResults(searchResultArr);
-							userMediaChoice = val.integerInRangeStringToExit(
-									"\nEnter the number of the book or movie to grab or type \"main\" to return to main menu: ",
-									"main", scnr, 1, searchResultArr.size());
-						} else
-							break;
-
-						if (userMediaChoice == -1) { // exit Search submenu
-							searchingCatalog = false;
-						} else {
-							addToCart(searchResultArr, userMediaChoice);
-							boolean continueSearch = val.userContinueYorN("\nContinue Searching? (y/n): ", scnr);
-							if (continueSearch) {
-								searchingCatalog = true;
-							} else {
-								searchingCatalog = false;
-							}
-						}
-
-						break;
-
-					case 3: // Exit back to Main menu
-						searchingCatalog = false;
-						break;
-
-					default:
-						throw new IllegalArgumentException("Unexpected value: " + userSearchMenuChoice);
-					}
-
-				} while (searchingCatalog);
-
+			case 2: // Search Sub-menu
+				searchSubmenu();
 				break;
 
 			case 3: // Return
@@ -280,6 +206,7 @@ public class LibraryApp {
 	}
 
 	
+
 	private static void browseSubmenu() {
 		System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
 		int userBrowseMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
@@ -287,13 +214,13 @@ public class LibraryApp {
 		switch (userBrowseMenuChoice) {
 
 		case 1: // --Browse Books
-			browse(bookInventory,
-					"\nEnter book number to add to cart (or type \"main\" to return to main menu): ", "main");
+			browse(bookInventory, "\nEnter book number to add to cart (or type \"main\" to return to main menu): ",
+					"main");
 			break;
 
 		case 2: // --Browse Movies
-			browse(movieInventory,
-					"\nEnter movie number to add to cart (or type \"main\" to return to main menu): ", "main");
+			browse(movieInventory, "\nEnter movie number to add to cart (or type \"main\" to return to main menu): ",
+					"main");
 			break;
 
 		case 3: // --Exit back to Main Menu
@@ -309,32 +236,31 @@ public class LibraryApp {
 
 	
 	private static void browse(ArrayList<? extends Media> inventory, String choiceMsg, String breakMsg) {
-		boolean browsingBooks = true;
+		boolean stillBrowsing = true;
 
 		do {
 			printInventoryList(inventory);
 			int browseBookChoice = val.integerInRangeStringToExit(choiceMsg, breakMsg, scnr, 1, inventory.size());
 
 			if (browseBookChoice == -1) { // exit browse submenu
-				browsingBooks = false;
+				stillBrowsing = false;
 			} else { // add to cart
 				addToCart(inventory, browseBookChoice);
 				boolean continueBrowse = val.userContinueYorN("\nContinue Browsing? (y/n): ", scnr);
 
 				if (continueBrowse) {
-					browsingBooks = true;
+					stillBrowsing = true;
 				} else {
-					browsingBooks = false;
+					stillBrowsing = false;
 				}
 			}
-		} while (browsingBooks);
+		} while (stillBrowsing);
 	}
 
-	
 	private static void printInventoryList(ArrayList<? extends Media> inventory) {
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Title", "Author(s) / Director", "Status");
 		System.out
-		.println("==========================================================================================");
+				.println("==========================================================================================");
 		if (inventory.get(0).getClass() == Book.class) {
 			for (int i = 0; i < inventory.size(); i++) {
 				String author = (String) inventory.get(i).getAuthor().toString().subSequence(1,
@@ -350,8 +276,7 @@ public class LibraryApp {
 			}
 		}
 	}
-	
-	
+
 	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
 		Media media = list.get(itemChoice - 1);
 		if (media.getMediaStatus().equals(Status.ONSHELF)) {
@@ -359,11 +284,71 @@ public class LibraryApp {
 			cart.addToCart(media);
 			System.out.println(media.getTitle() + " added to cart.");
 
+		} else if (media.getMediaStatus().equals(Status.INCART)) {
+			System.out.println("Selection is already in your cart.");
 		} else {
 			System.out.print("Sorry Selection is not available");
 		}
 	}
+
 	
+	private static void searchSubmenu() {
+		boolean searchingCatalog = true;
+		
+		do {
+			System.out.println(
+					"\n1. Search by Author / Director\n2. Search by Title (keyword)\n3. Exit To Main Menu");
+			int userSearchMenuChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 3);
+
+			switch (userSearchMenuChoice) {
+
+			case 1: // --Search by Author/Director
+				search("\nPlease enter Author / Director name: ", "creator");
+				break;
+
+			case 2: // --Search by Title keyword
+				search("\nPlease enter Title keyword(s): ", "title");
+				break;
+
+			case 3: // Exit back to Main menu
+				searchingCatalog = false;
+				break;
+
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + userSearchMenuChoice);
+			}
+
+		} while (searchingCatalog);
+	}
+
+	private static void search(String searchMsg, String searchBy) {
+		boolean searchingCatalog;
+		int userMediaChoice;
+		System.out.println(searchMsg);
+		String userSearchString = scnr.nextLine();
+
+		ArrayList<Media> searchResultArr = searchResults(searchBy, userSearchString);
+
+		if (searchResultArr.size() > 0) {
+			printSearchResults(searchResultArr);
+			userMediaChoice = val.integerInRangeStringToExit(
+					"\nEnter the number of the book or movie to add to cart (or type \"main\" to return to main menu): ",
+					"main", scnr, 1, searchResultArr.size());
+
+			if (userMediaChoice == -1) { // exit Search submenu
+				searchingCatalog = false;
+			} else { // add to cart
+				addToCart(searchResultArr, userMediaChoice);
+				boolean continueSearch = val.userContinueYorN("\nContinue Searching? (y/n): ", scnr);
+				
+				if (continueSearch) {
+					searchingCatalog = true;
+				} else {
+					searchingCatalog = false;
+				}
+			}
+		}
+	}
 	
 	private static void throwMediaInRecycleBin() {
 		for (int i = 0; i < recycledItems.size(); i++) {
@@ -385,7 +370,6 @@ public class LibraryApp {
 		System.out.println("\nBook recycled");
 	}
 
-
 	private static void printSearchResults(ArrayList<Media> list) {
 		list.sort(Comparator.comparing(Media::getTitle));
 		System.out.printf("%-5s%-45s%-30s%-15s%s%n", "No.", "Title", "Author(s) / Director", "Media", "Status");
@@ -402,28 +386,43 @@ public class LibraryApp {
 		}
 	}
 
+	private static ArrayList<Media> searchResults(String searchBy, String userSearchString) {
 
-	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
-
-		@SuppressWarnings("unused")
 		boolean continueSearch = true;
 		ArrayList<Media> searchResultArr = new ArrayList<>();
 		userSearchString = userSearchString.toLowerCase();
 
-		for (Book book : bookInventory) {
-			if (book.getAuthor().toString().toLowerCase().contains(userSearchString)) {
-				searchResultArr.add(book);
+		switch (searchBy) {
+		case "creator":
+			for (Book book : bookInventory) {
+				if (book.getAuthor().toString().toLowerCase().contains(userSearchString)) {
+					searchResultArr.add(book);
+				}
 			}
-		}
-		for (Movie movie : movieInventory) {
-			if (movie.getDirector().toString().toLowerCase().contains(userSearchString)) {
-				searchResultArr.add(movie);
+			for (Movie movie : movieInventory) {
+				if (movie.getDirector().toString().toLowerCase().contains(userSearchString)) {
+					searchResultArr.add(movie);
+				}
+			}
+
+		case "title":
+			for (Book book : bookInventory) {
+				if (book.getTitle().toString().toLowerCase().contains(userSearchString)) {
+					searchResultArr.add(book);
+				}
+			}
+			for (Movie movie : movieInventory) {
+				if (movie.getTitle().toString().toLowerCase().contains(userSearchString)) {
+					searchResultArr.add(movie);
+				}
 			}
 		}
 
 		if (searchResultArr.size() < 1) {
-			System.out.println(
-					"\nSorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
+			String notFound = (searchBy.equals("creator")
+					? "\nSorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. "
+					: "\nSorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
+			System.out.println(notFound);
 			continueSearch = true;
 		} else {
 			continueSearch = false;
@@ -432,34 +431,63 @@ public class LibraryApp {
 		return searchResultArr;
 	}
 
-	private static ArrayList<Media> searchTitleResults(String userSearchString) {
-
-		@SuppressWarnings("unused")
-		boolean continueSearch = true;
-		ArrayList<Media> searchResultArr = new ArrayList<>();
-		userSearchString = userSearchString.toLowerCase();
-
-		for (Book book : bookInventory) {
-			if (book.getTitle().toString().toLowerCase().contains(userSearchString)) {
-				searchResultArr.add(book);
-			}
-		}
-		for (Movie movie : movieInventory) {
-			if (movie.getTitle().toString().toLowerCase().contains(userSearchString)) {
-				searchResultArr.add(movie);
-			}
-		}
-
-		if (searchResultArr.size() < 1) {
-			System.out.println(
-					"\nSorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
-			continueSearch = true;
-		} else {
-			continueSearch = false;
-		}
-
-		return searchResultArr;
-	}
+//	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
+//
+//		@SuppressWarnings("unused")
+//		boolean continueSearch = true;
+//		ArrayList<Media> searchResultArr = new ArrayList<>();
+//		userSearchString = userSearchString.toLowerCase();
+//
+//		for (Book book : bookInventory) {
+//			if (book.getAuthor().toString().toLowerCase().contains(userSearchString)) {
+//				searchResultArr.add(book);
+//			}
+//		}
+//		for (Movie movie : movieInventory) {
+//			if (movie.getDirector().toString().toLowerCase().contains(userSearchString)) {
+//				searchResultArr.add(movie);
+//			}
+//		}
+//
+//		if (searchResultArr.size() < 1) {
+//			System.out.println(
+//					"\nSorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
+//			continueSearch = true;
+//		} else {
+//			continueSearch = false;
+//		}
+//
+//		return searchResultArr;
+//	}
+//
+//	private static ArrayList<Media> searchTitleResults(String userSearchString) {
+//
+//		@SuppressWarnings("unused")
+//		boolean continueSearch = true;
+//		ArrayList<Media> searchResultArr = new ArrayList<>();
+//		userSearchString = userSearchString.toLowerCase();
+//
+//		for (Book book : bookInventory) {
+//			if (book.getTitle().toString().toLowerCase().contains(userSearchString)) {
+//				searchResultArr.add(book);
+//			}
+//		}
+//		for (Movie movie : movieInventory) {
+//			if (movie.getTitle().toString().toLowerCase().contains(userSearchString)) {
+//				searchResultArr.add(movie);
+//			}
+//		}
+//
+//		if (searchResultArr.size() < 1) {
+//			System.out.println(
+//					"\nSorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
+//			continueSearch = true;
+//		} else {
+//			continueSearch = false;
+//		}
+//
+//		return searchResultArr;
+//	}
 
 	private static void checkout() {
 		System.out.println("\nCheckout Successful, here is your receipt: ");

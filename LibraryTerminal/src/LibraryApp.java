@@ -111,37 +111,6 @@ public class LibraryApp {
 		System.out.println("\nThank you, boodbye!");
 
 	}
-
-
-	private static void checkoutSubmenu() {
-		boolean cartIsUnverified = true;
-		do {
-			if (cart.getCart().size() > 0) {
-				System.out.println("\nYour cart currently includes: ");
-				System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
-				System.out.println("============================================================");
-				for (int i = 0; i < cart.getCart().size(); i++) {
-					System.out.printf("%-5s%-45s%-20s%n", i + 1, cart.getCart().get(i).getTitle(),
-							cart.getCart().get(i).getClass().toString().substring(6));
-				}
-
-				int checkoutOption = val.integerInRangeStringToExit(
-						"\nIf you'd like to remove something from your cart, please enter it's number and press enter.\nOtherwise, please type \"checkout\" to checkout. ",
-						"checkout", scnr, 1, cart.getCart().size());
-				if (checkoutOption == -1) {
-					cartIsUnverified = false;
-					checkout();
-				} else {
-					cartIsUnverified = true;
-					cart.getCart().remove(checkoutOption - 1);
-				}
-
-			} else {
-				cartIsUnverified = false;
-				System.out.println("\nYour cart is empty. Please add an item.");
-			}
-		} while (cartIsUnverified);
-	}
 	
 
 	private static void browseSubmenu() {
@@ -336,6 +305,37 @@ public class LibraryApp {
 				}
 			}
 		} while (stillReturning);
+	}
+	
+	
+	private static void checkoutSubmenu() {
+		boolean cartIsUnverified = true;
+		do {
+			if (cart.getCart().size() > 0) {
+				System.out.println("\nYour cart currently includes: ");
+				System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
+				System.out.println("============================================================");
+				for (int i = 0; i < cart.getCart().size(); i++) {
+					System.out.printf("%-5s%-45s%-20s%n", i + 1, cart.getCart().get(i).getTitle(),
+							cart.getCart().get(i).getClass().toString().substring(6));
+				}
+
+				int checkoutOption = val.integerInRangeStringToExit(
+						"\nIf you'd like to remove something from your cart, please enter it's number and press enter.\nOtherwise, please type \"checkout\" to checkout. ",
+						"checkout", scnr, 1, cart.getCart().size());
+				if (checkoutOption == -1) {
+					cartIsUnverified = false;
+					checkout();
+				} else {
+					cartIsUnverified = true;
+					cart.getCart().remove(checkoutOption - 1);
+				}
+
+			} else {
+				cartIsUnverified = false;
+				System.out.println("\nYour cart is empty. Please add an item.");
+			}
+		} while (cartIsUnverified);
 	}
 	
 	

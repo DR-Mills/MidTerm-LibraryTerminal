@@ -39,55 +39,7 @@ public class LibraryApp {
 				break;
 
 			case 3: // Return
-				// need to add if zero returns print zero returns
-				boolean stillReturning = false;
-				ArrayList<Media> checkedOutMedia = new ArrayList<>();
-				
-				for (Book book : bookInventory) {
-					if (book.getMediaStatus() == Status.CHECKEDOUT) {
-						checkedOutMedia.add(book);
-					}
-				}
-				for (Movie movie : movieInventory) {
-					if (movie.getMediaStatus() == Status.CHECKEDOUT) {
-						checkedOutMedia.add(movie);
-					}
-				}
-				do {
-					if (checkedOutMedia.size() == 0) {
-						System.out.println("\nThere are no checked out items. You are being returned to the main menu. ");
-						break;
-					}
-					int indexShiftCount = 0;
-					printInventoryList(checkedOutMedia);
-					ArrayList<Integer> returnBookChoice = val.integerArrayListInRangeExitStringReturnNeg1(
-							"\nPlease enter the number of the item you'd like to return.\nFor multiple items, enter each item number, separated by a space.\nTo return to the main menu, type \"main\". ",
-							"main", scnr, 1, checkedOutMedia.size());
-					if (returnBookChoice.size() == 1 && returnBookChoice.get(0) == -1) { // exit return submenu
-						stillReturning = false;
-					} else { // return items from checkout
-						for (Integer i : returnBookChoice) {
-							System.out.println("shiftcount = " + indexShiftCount);
-							Media m = checkedOutMedia.get(i - indexShiftCount - 1);
-							m.setMediaStatus(Status.INRETURNS);
-							returnedItems.add(m);
-							System.out.println("Returned " + m);
-							checkedOutMedia.remove(m);
-							System.out.println("Removed " + m + " from checked Out List");
-							indexShiftCount++;
-							System.out.println("Incremented shiftcount");
-						}
-
-						boolean continueBrowse = val.userContinueYorN("\nReturn more books? (y/n): ", scnr);
-
-						if (continueBrowse) {
-							stillReturning = true;
-						} else {
-							stillReturning = false;
-						}
-					}
-				} while (stillReturning);
-
+				returnItemSubmenu();
 				break;
 
 			case 4: // Donate Book
@@ -142,33 +94,7 @@ public class LibraryApp {
 				break;
 
 			case 5:// Checkout
-				boolean cartIsUnverified = true;
-				do {
-					if (cart.getCart().size() > 0) {
-						System.out.println("\nYour cart currently includes: ");
-						System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
-						System.out.println("============================================================");
-						for (int i = 0; i < cart.getCart().size(); i++) {
-							System.out.printf("%-5s%-45s%-20s%n", i + 1, cart.getCart().get(i).getTitle(),
-									cart.getCart().get(i).getClass().toString().substring(6));
-						}
-
-						int checkoutOption = val.integerInRangeStringToExit(
-								"\nIf you'd like to remove something from your cart, please enter it's number and press enter.\nOtherwise, please type \"checkout\" to checkout. ",
-								"checkout", scnr, 1, cart.getCart().size());
-						if (checkoutOption == -1) {
-							cartIsUnverified = false;
-							checkout();
-						} else {
-							cartIsUnverified = true;
-							cart.getCart().remove(checkoutOption - 1);
-						}
-
-					} else {
-						cartIsUnverified = false;
-						System.out.println("\nYour cart is empty. Please add an item.");
-					}
-				} while (cartIsUnverified);
+				checkoutSubmenu();
 				break;
 
 			case 6: // Exit
@@ -185,6 +111,38 @@ public class LibraryApp {
 		System.out.println("\nThank you, boodbye!");
 
 	}
+
+
+	private static void checkoutSubmenu() {
+		boolean cartIsUnverified = true;
+		do {
+			if (cart.getCart().size() > 0) {
+				System.out.println("\nYour cart currently includes: ");
+				System.out.printf("%-5s%-45s%-20s%n", "No", "Title", "Media Type");
+				System.out.println("============================================================");
+				for (int i = 0; i < cart.getCart().size(); i++) {
+					System.out.printf("%-5s%-45s%-20s%n", i + 1, cart.getCart().get(i).getTitle(),
+							cart.getCart().get(i).getClass().toString().substring(6));
+				}
+
+				int checkoutOption = val.integerInRangeStringToExit(
+						"\nIf you'd like to remove something from your cart, please enter it's number and press enter.\nOtherwise, please type \"checkout\" to checkout. ",
+						"checkout", scnr, 1, cart.getCart().size());
+				if (checkoutOption == -1) {
+					cartIsUnverified = false;
+					checkout();
+				} else {
+					cartIsUnverified = true;
+					cart.getCart().remove(checkoutOption - 1);
+				}
+
+			} else {
+				cartIsUnverified = false;
+				System.out.println("\nYour cart is empty. Please add an item.");
+			}
+		} while (cartIsUnverified);
+	}
+	
 
 	private static void browseSubmenu() {
 		System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
@@ -213,6 +171,7 @@ public class LibraryApp {
 		}
 	}
 
+	
 	private static void browse(ArrayList<? extends Media> inventory, String choiceMsg, String breakMsg) {
 		boolean stillBrowsing = true;
 
@@ -235,6 +194,7 @@ public class LibraryApp {
 		} while (stillBrowsing);
 	}
 
+	
 	private static void printInventoryList(ArrayList<? extends Media> inventory) {
 		String creator = "";
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Title", "Author(s) / Director", "Status");
@@ -252,6 +212,7 @@ public class LibraryApp {
 		}
 	}
 
+	
 	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
 		Media media = list.get(itemChoice - 1);
 		if (media.getMediaStatus().equals(Status.ONSHELF)) {
@@ -266,6 +227,7 @@ public class LibraryApp {
 		}
 	}
 
+	
 	private static void searchSubmenu() {
 		boolean searchingCatalog = true;
 
@@ -294,6 +256,7 @@ public class LibraryApp {
 		} while (searchingCatalog);
 	}
 
+	
 	private static boolean search(String searchMsg, String searchBy) {
 		boolean searchingCatalog = true;
 		int userMediaChoice;
@@ -324,6 +287,58 @@ public class LibraryApp {
 		return searchingCatalog;
 	}
 
+	
+	private static void returnItemSubmenu() {
+		boolean stillReturning = false;
+		ArrayList<Media> checkedOutMedia = new ArrayList<>();
+		
+		for (Book book : bookInventory) {
+			if (book.getMediaStatus() == Status.CHECKEDOUT) {
+				checkedOutMedia.add(book);
+			}
+		}
+		for (Movie movie : movieInventory) {
+			if (movie.getMediaStatus() == Status.CHECKEDOUT) {
+				checkedOutMedia.add(movie);
+			}
+		}
+		do {
+			if (checkedOutMedia.size() == 0) {
+				System.out.println("\nThere are no checked out items. You are being returned to the main menu. ");
+				break;
+			}
+			int indexShiftCount = 0;
+			printInventoryList(checkedOutMedia);
+			ArrayList<Integer> returnBookChoice = val.integerArrayListInRangeExitStringReturnNeg1(
+					"\nPlease enter the number of the item you'd like to return.\nFor multiple items, enter each item number, separated by a space.\nTo return to the main menu, type \"main\". ",
+					"main", scnr, 1, checkedOutMedia.size());
+			if (returnBookChoice.size() == 1 && returnBookChoice.get(0) == -1) { // exit return submenu
+				stillReturning = false;
+			} else { // return items from checkout
+				for (Integer i : returnBookChoice) {
+					System.out.println("shiftcount = " + indexShiftCount);
+					Media m = checkedOutMedia.get(i - indexShiftCount - 1);
+					m.setMediaStatus(Status.INRETURNS);
+					returnedItems.add(m);
+					System.out.println("Returned " + m);
+					checkedOutMedia.remove(m);
+					System.out.println("Removed " + m + " from checked Out List");
+					indexShiftCount++;
+					System.out.println("Incremented shiftcount");
+				}
+
+				boolean continueBrowse = val.userContinueYorN("\nReturn more books? (y/n): ", scnr);
+
+				if (continueBrowse) {
+					stillReturning = true;
+				} else {
+					stillReturning = false;
+				}
+			}
+		} while (stillReturning);
+	}
+	
+	
 	private static void throwMediaInRecycleBin() {
 		for (int i = 0; i < recycledItems.size(); i++) {
 			recycledItems.pop();

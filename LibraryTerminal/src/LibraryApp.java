@@ -34,78 +34,59 @@ public class LibraryApp {
 				browseSubmenu();
 				break;
 
-			case 2: // Search Sub-menu 
+			case 2: // Search Sub-menu
 				searchSubmenu();
 				break;
 
 			case 3: // Return
-
-				System.out.println("\nWhat would you like to return\n1. Book\n2. Movie");
-				int userReturnChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 2);
-				int itemNotFound = 0;
-
-				if (userReturnChoice == 1) {
-					System.out.print("\nEnter Book Title: ");
-					String returnBookTitle = scnr.nextLine();
-
-					for (Book book : bookInventory) {
-						if (!returnBookTitle.equalsIgnoreCase(book.getTitle())) {
-							itemNotFound++;
-						}
-						if (returnBookTitle.equalsIgnoreCase(book.getTitle())
-								&& book.getMediaStatus() != Status.CHECKEDOUT) {
-							System.out.println(
-									"That title isn't checked out yet. It's currently " + book.getMediaStatus() + ". ");
-							break;
-						}
-						if (returnBookTitle.equalsIgnoreCase(book.getTitle())
-								&& book.getMediaStatus() == Status.CHECKEDOUT) {
-							if (book.getCondition() < 1) {
-								recycleBook(book);
-								break;
-							} else {
-								book.setMediaStatus(Status.INRETURNS);
-								returnedItems.add(book);
-								System.out.println("\nBook returned");
-								break;
-							}
-						}
-						if (itemNotFound == bookInventory.size()) {
-							System.out.println("\nBook not in our catalog.");
-						}
-					}
-
-				} else if (userReturnChoice == 2) {
-					System.out.print("\nEnter Movie Title: ");
-					String returnMovieTitle = scnr.nextLine();
-
-					for (Movie movie : movieInventory) {
-						if (!returnMovieTitle.equalsIgnoreCase(movie.getTitle())) {
-							itemNotFound++;
-						}
-						if (returnMovieTitle.equalsIgnoreCase(movie.getTitle())
-								&& movie.getMediaStatus() != Status.CHECKEDOUT) {
-							System.out.println("That title isn't checked out yet. It's currently "
-									+ movie.getMediaStatus() + ". ");
-							break;
-						}
-						if (returnMovieTitle.equalsIgnoreCase(movie.getTitle())
-								&& movie.getMediaStatus() == Status.CHECKEDOUT) {
-							if (movie.getCondition() < 1) {
-								recycleMovie(movie);
-								break;
-							} else {
-								movie.setMediaStatus(Status.INRETURNS);
-								returnedItems.add(movie);
-								System.out.println("\nMovie returned");
-								break;
-							}
-						}
-						if (itemNotFound == movieInventory.size()) {
-							System.out.println("\nMovie not in our catalog.");
-						}
+				// need to add if zero returns print zero returns
+				boolean stillReturning = false;
+				ArrayList<Media> checkedOutMedia = new ArrayList<>();
+				
+				for (Book book : bookInventory) {
+					if (book.getMediaStatus() == Status.CHECKEDOUT) {
+						checkedOutMedia.add(book);
 					}
 				}
+				for (Movie movie : movieInventory) {
+					if (movie.getMediaStatus() == Status.CHECKEDOUT) {
+						checkedOutMedia.add(movie);
+					}
+				}
+				do {
+					if (checkedOutMedia.size() == 0) {
+						System.out.println("\nThere are no checked out items. You are being returned to the main menu. ");
+						break;
+					}
+					int indexShiftCount = 0;
+					printInventoryList(checkedOutMedia);
+					ArrayList<Integer> returnBookChoice = val.integerArrayListInRangeExitStringReturnNeg1(
+							"\nPlease enter the number of the item you'd like to return.\nFor multiple items, enter each item number, separated by a space.\nTo return to the main menu, type \"main\". ",
+							"main", scnr, 1, checkedOutMedia.size());
+					if (returnBookChoice.size() == 1 && returnBookChoice.get(0) == -1) { // exit return submenu
+						stillReturning = false;
+					} else { // return items from checkout
+						for (Integer i : returnBookChoice) {
+							System.out.println("shiftcount = " + indexShiftCount);
+							Media m = checkedOutMedia.get(i - indexShiftCount - 1);
+							m.setMediaStatus(Status.INRETURNS);
+							returnedItems.add(m);
+							System.out.println("Returned " + m);
+							checkedOutMedia.remove(m);
+							System.out.println("Removed " + m + " from checked Out List");
+							indexShiftCount++;
+							System.out.println("Incremented shiftcount");
+						}
+
+						boolean continueBrowse = val.userContinueYorN("\nReturn more books? (y/n): ", scnr);
+
+						if (continueBrowse) {
+							stillReturning = true;
+						} else {
+							stillReturning = false;
+						}
+					}
+				} while (stillReturning);
 
 				break;
 
@@ -255,22 +236,19 @@ public class LibraryApp {
 	}
 
 	private static void printInventoryList(ArrayList<? extends Media> inventory) {
+		String creator = "";
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Title", "Author(s) / Director", "Status");
 		System.out
 				.println("==========================================================================================");
-		if (inventory.get(0).getClass() == Book.class) {
-			for (int i = 0; i < inventory.size(); i++) {
-				String author = (String) inventory.get(i).getAuthor().toString().subSequence(1,
+		for (int i = 0; i < inventory.size(); i++) {
+			if (inventory.get(i).getClass() == Movie.class) {
+				creator = inventory.get(i).getAuthor().toString();
+			} else {
+				creator = (String) inventory.get(i).getAuthor().toString().subSequence(1,
 						inventory.get(i).getAuthor().toString().length() - 1);
-				System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, inventory.get(i).getTitle(), author,
-						inventory.get(i).getMediaStatus());
 			}
-		}
-		if (inventory.get(0).getClass() == Movie.class) {
-			for (int i = 0; i < inventory.size(); i++) {
-				System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, inventory.get(i).getTitle(),
-						inventory.get(i).getDirector(), inventory.get(i).getMediaStatus());
-			}
+			System.out.printf("%-5s%-45s%-30s%-10s%n", i + 1, inventory.get(i).getTitle(), creator,
+					inventory.get(i).getMediaStatus());
 		}
 	}
 

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -51,12 +52,51 @@ public class Validator {
 					keepGoing = false;
 				}
 			} catch (InputMismatchException | NumberFormatException e) {
-				System.out.print("Invalid input. Please enter a whole number only between " + min + " and " + max + ": ");
+				System.out
+						.print("Invalid input. Please enter a whole number only between " + min + " and " + max + ": ");
 				keepGoing = true;
 			}
 		} while (keepGoing);
 
 		return returnValue;
+	}
+
+	// validates whole integer within given range
+	// returns -1 if user enters given String (exitString) instead of a number
+	public ArrayList<Integer> integerArrayListInRangeExitStringReturnNeg1(String promptMsg, String exitString,
+			Scanner scnr, int min, int max) {
+		ArrayList<Integer> intArr = new ArrayList<>();
+		boolean keepGoing = true;
+
+		System.out.print(promptMsg);
+		do {
+			String strValue = scnr.nextLine();
+			if (strValue.equalsIgnoreCase(exitString)) {
+				intArr.add(-1);
+				return intArr;
+			}
+			try {
+				String[] strArray = strValue.split(" ");
+				for (int i = 0; i < strArray.length; i++) {
+					int intValue = Integer.parseInt(strArray[i]);
+
+					if (intValue < min || intValue > max) {
+						System.out.print("Please only enter numbers between " + min + " and " + max + ": ");
+						keepGoing = true;
+						break;
+					} else {
+						intArr.add(intValue);
+						keepGoing = false;
+					}
+				}
+			} catch (InputMismatchException | NumberFormatException e) {
+				System.out
+						.print("Invalid input. Please enter whole numbers only between " + min + " and " + max + ": ");
+				keepGoing = true;
+			}
+		} while (keepGoing);
+
+		return intArr;
 	}
 
 	// overloaded method

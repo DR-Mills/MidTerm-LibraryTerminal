@@ -188,6 +188,7 @@ public class LibraryApp {
 
 					for (Book book : bookInventory) {
 						if (returnBookTitle.equals(book.getTitle()) && book.getMediaStatus() == Status.CHECKEDOUT) {
+							System.out.println("\nBook not in our catalog.");
 							if (book.getCondition() < 1) {
 								recycleBook(book);
 								break;
@@ -197,10 +198,7 @@ public class LibraryApp {
 								System.out.println("\nBook returned");
 								break;
 							}
-						} else {
-							System.out.println("\nBook not in our catalog.");
-
-						}
+						} 
 					}
 
 				} else if (userReturnChoice == 2) {

@@ -3,6 +3,35 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Validator {
+	
+	// validates whole integer input only
+	public int integerOnly(String promptMsg, Scanner scnr) {
+			int returnValue = 0;
+			boolean keepGoing = true;
+
+			System.out.print(promptMsg);
+			do {
+				try {
+					returnValue = scnr.nextInt();
+
+					if (returnValue < Integer.MIN_VALUE || returnValue > Integer.MAX_VALUE) {
+						System.out.print("Please enter a number between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE + ": ");
+						keepGoing = true;
+					} else {
+						keepGoing = false;
+					}
+					scnr.nextLine();
+				} catch (InputMismatchException e) {
+					System.out
+							.print("Invalid input. Please enter a whole number only between " + Integer.MIN_VALUE + " and " + Integer.MAX_VALUE + ": ");
+					scnr.nextLine();
+					keepGoing = true;
+				}
+			} while (keepGoing);
+
+			return returnValue;
+		}
+
 	// validates whole integer within given range
 	public int integerWithinRange(String promptMsg, Scanner scnr, int min, int max) {
 		int returnValue = 0;

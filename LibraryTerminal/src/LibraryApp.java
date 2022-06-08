@@ -43,54 +43,7 @@ public class LibraryApp {
 				break;
 
 			case 4: // Donate Book
-
-				System.out.println("\nWhat would you like to donate\n1. Book\n2. Movie");
-				int userDonateChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 2);
-
-				if (userDonateChoice == 1) {
-					System.out.print("\nEnter Book Title: ");
-					String donateBookTitle = scnr.nextLine();
-
-					System.out.print("\nEnter Book Author: ");
-					String donateBookAuthor = scnr.nextLine();
-
-					System.out.print("\nEnter Book Condition(1-100): ");
-					int donateBookCondition = val.integerWithinRange("\nEnter number: ", scnr, 1, 100);
-
-					if (donateBookCondition < 40) {
-						recycledItems.add(new Book(donateBookTitle, donateBookCondition, Status.INRECYCLED,
-								new ArrayList<String>(Arrays.asList(donateBookAuthor))));
-						System.out.println("Book recycled");
-					} else {
-						bookInventory.add(new Book(donateBookTitle, donateBookCondition, Status.ONSHELF,
-								new ArrayList<String>(Arrays.asList(donateBookAuthor))));
-						System.out.println("Book donated");
-					}
-
-				} else if (userDonateChoice == 2) {
-					System.out.print("\nEnter Movie Title: ");
-					String donateMovieTitle = scnr.nextLine();
-
-					System.out.print("\nEnter Movie Director: ");
-					String donateMovieDirector = scnr.nextLine();
-
-					System.out.print("\nEnter Movie Condition(1-100): ");
-					int donateMovieCondition = val.integerWithinRange("\nEnter number: ", scnr, 1, 100);
-
-					System.out.println("\nEnter Movie Run Time");
-					int donateMovieRunTime = scnr.nextInt();
-
-					if (donateMovieCondition < 1) {
-						recycledItems.add(new Movie(donateMovieTitle, donateMovieCondition, Status.INRECYCLED,
-								donateMovieDirector, donateMovieRunTime));
-						System.out.println("\nMovie Recycled");
-					} else {
-						movieInventory.add(new Movie(donateMovieTitle, donateMovieCondition, Status.ONSHELF,
-								donateMovieDirector, donateMovieRunTime));
-						System.out.println("\nMovie donated");
-					}
-				}
-
+				donateItemSubmenu();
 				break;
 
 			case 5:// Checkout
@@ -98,8 +51,8 @@ public class LibraryApp {
 				break;
 
 			case 6: // Exit
-				returnsStackCheck(returnedItems);
-				throwMediaInRecycleBin();
+				checkReturnsStack();
+				emptyRecycleBin();
 				userInLibrary = false;
 				break;
 
@@ -111,7 +64,74 @@ public class LibraryApp {
 		System.out.println("\nThank you, boodbye!");
 
 	}
+
 	
+	private static void donateItemSubmenu() {
+		Media donatedItem;
+
+		System.out.println("\nWhat would you like to donate\n1. Book\n2. Movie");
+		int userDonateChoice = val.integerWithinRange("\nEnter number: ", scnr, 1, 2);
+
+		if (userDonateChoice == 1) {
+			donatedItem = manuallyCreateBook();
+		} else {
+			donatedItem = manuallyCreateMovie();
+		}
+		
+		if (donatedItem.getCondition() < 20) {
+			recycledItems.push(donatedItem);
+			System.out.println(
+					donatedItem.getTitle() + " is too used for our library and has been added to our recycle bin.");
+		} else {
+			returnedItems.push(donatedItem);
+			System.out.println(donatedItem.getTitle() + " accepted. Thank you for your donation! ");
+			if (donatedItem.getClass() == Movie.class) {
+				movieInventory.add((Movie) donatedItem);
+			}
+			if (donatedItem.getClass() == Book.class) {
+				bookInventory.add((Book) donatedItem);
+			}
+		}
+	}
+
+	
+	private static Movie manuallyCreateMovie() {
+		System.out.print("\nEnter Movie Title: ");
+		String movieTitle = scnr.nextLine();
+
+		System.out.print("\nEnter Movie Director: ");
+		String movieDirector = scnr.nextLine();
+
+		System.out.print("\nEnter Movie Condition(1-100): ");
+		int movieCondition = val.integerWithinRange("\nEnter number: ", scnr, 1, 100);
+
+		int movieRunTime = val.integerOnly("\nEnter movie runtime in minutes (rounded up to the nearest minute): ",
+				scnr);
+
+		return new Movie(movieTitle, movieCondition, Status.INRETURNS, movieDirector, movieRunTime);
+	}
+
+	
+	private static Book manuallyCreateBook() {
+		ArrayList<String> author = new ArrayList<>();
+
+		System.out.print("\nEnter Book Title: ");
+		String bookTitle = scnr.nextLine();
+
+		System.out.print("\nEnter Book Author: ");
+		String bookAuthor = scnr.nextLine();
+
+		int bookCondition = val.integerWithinRange("\\nEnter Book Condition(1-100): ", scnr, 1, 100);
+
+		String[] authorArr = bookAuthor.split(",");
+		for (String a : authorArr) {
+			a = a.trim();
+			author.add(a);
+		}
+
+		return new Book(bookTitle, bookCondition, Status.INRETURNS, author);
+
+	}
 
 	private static void browseSubmenu() {
 		System.out.println("1. Browse Books\n2. Browse Movie\n3. Exit To Main Menu");
@@ -140,7 +160,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void browse(ArrayList<? extends Media> inventory, String choiceMsg, String breakMsg) {
 		boolean stillBrowsing = true;
 
@@ -163,7 +182,6 @@ public class LibraryApp {
 		} while (stillBrowsing);
 	}
 
-	
 	private static void printInventoryList(ArrayList<? extends Media> inventory) {
 		String creator = "";
 		System.out.printf("%-5s%-45s%-30s%-10s%n", "No.", "Title", "Author(s) / Director", "Status");
@@ -181,7 +199,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void addToCart(ArrayList<? extends Media> list, int itemChoice) {
 		Media media = list.get(itemChoice - 1);
 		if (media.getMediaStatus().equals(Status.ONSHELF)) {
@@ -196,7 +213,6 @@ public class LibraryApp {
 		}
 	}
 
-	
 	private static void searchSubmenu() {
 		boolean searchingCatalog = true;
 
@@ -225,7 +241,6 @@ public class LibraryApp {
 		} while (searchingCatalog);
 	}
 
-	
 	private static boolean search(String searchMsg, String searchBy) {
 		boolean searchingCatalog = true;
 		int userMediaChoice;
@@ -256,11 +271,10 @@ public class LibraryApp {
 		return searchingCatalog;
 	}
 
-	
 	private static void returnItemSubmenu() {
 		boolean stillReturning = false;
 		ArrayList<Media> checkedOutMedia = new ArrayList<>();
-		
+
 		for (Book book : bookInventory) {
 			if (book.getMediaStatus() == Status.CHECKEDOUT) {
 				checkedOutMedia.add(book);
@@ -289,11 +303,8 @@ public class LibraryApp {
 					Media m = checkedOutMedia.get(i - indexShiftCount - 1);
 					m.setMediaStatus(Status.INRETURNS);
 					returnedItems.add(m);
-					System.out.println("Returned " + m);
 					checkedOutMedia.remove(m);
-					System.out.println("Removed " + m + " from checked Out List");
 					indexShiftCount++;
-					System.out.println("Incremented shiftcount");
 				}
 
 				boolean continueBrowse = val.userContinueYorN("\nReturn more books? (y/n): ", scnr);
@@ -306,8 +317,7 @@ public class LibraryApp {
 			}
 		} while (stillReturning);
 	}
-	
-	
+
 	private static void checkoutSubmenu() {
 		boolean cartIsUnverified = true;
 		do {
@@ -337,11 +347,10 @@ public class LibraryApp {
 			}
 		} while (cartIsUnverified);
 	}
-	
-	
-	private static void throwMediaInRecycleBin() {
+
+	private static void emptyRecycleBin() {
 		for (int i = 0; i < recycledItems.size(); i++) {
-			recycledItems.pop();
+			System.out.println(recycledItems.pop().getTitle() + " recycled.");
 		}
 	}
 
@@ -420,64 +429,6 @@ public class LibraryApp {
 		return searchResultArr;
 	}
 
-//	private static ArrayList<Media> searchAuthorResults(String userSearchString) {
-//
-//		@SuppressWarnings("unused")
-//		boolean continueSearch = true;
-//		ArrayList<Media> searchResultArr = new ArrayList<>();
-//		userSearchString = userSearchString.toLowerCase();
-//
-//		for (Book book : bookInventory) {
-//			if (book.getAuthor().toString().toLowerCase().contains(userSearchString)) {
-//				searchResultArr.add(book);
-//			}
-//		}
-//		for (Movie movie : movieInventory) {
-//			if (movie.getDirector().toString().toLowerCase().contains(userSearchString)) {
-//				searchResultArr.add(movie);
-//			}
-//		}
-//
-//		if (searchResultArr.size() < 1) {
-//			System.out.println(
-//					"\nSorry, no Authors or Directors with that name were found.\nPlease try a broader search term or a different name. ");
-//			continueSearch = true;
-//		} else {
-//			continueSearch = false;
-//		}
-//
-//		return searchResultArr;
-//	}
-//
-//	private static ArrayList<Media> searchTitleResults(String userSearchString) {
-//
-//		@SuppressWarnings("unused")
-//		boolean continueSearch = true;
-//		ArrayList<Media> searchResultArr = new ArrayList<>();
-//		userSearchString = userSearchString.toLowerCase();
-//
-//		for (Book book : bookInventory) {
-//			if (book.getTitle().toString().toLowerCase().contains(userSearchString)) {
-//				searchResultArr.add(book);
-//			}
-//		}
-//		for (Movie movie : movieInventory) {
-//			if (movie.getTitle().toString().toLowerCase().contains(userSearchString)) {
-//				searchResultArr.add(movie);
-//			}
-//		}
-//
-//		if (searchResultArr.size() < 1) {
-//			System.out.println(
-//					"\nSorry, no Titles containing that phrase were found.\nPlease try a broader search term or a different name. ");
-//			continueSearch = true;
-//		} else {
-//			continueSearch = false;
-//		}
-//
-//		return searchResultArr;
-//	}
-
 	private static void checkout() {
 		System.out.println("\nCheckout Successful, here is your receipt: ");
 		System.out.printf("%-40s%-15s%-15s%n", "Title", "Due Date", "Condition");
@@ -502,20 +453,12 @@ public class LibraryApp {
 		}
 	}
 
-	public static void returnsStackCheck(Stack<Media> returns) {
-		for (Media media : returns) {
-			if (media.getClass().equals(Book.class)) {
-				media.setMediaStatus(Status.ONSHELF);
-				media.setDueDate(null);
-				System.out.printf("%s returned to shelf\n", media.getTitle());
-
-			} else if (media.getClass().equals(Movie.class)) {
-				media.setMediaStatus(Status.ONSHELF);
-				media.setDueDate(null);
-				System.out.printf("%s returned to shelf\n", media.getTitle());
-			}
+	public static void checkReturnsStack() {
+		while (!returnedItems.empty()) {
+			returnedItems.peek().setMediaStatus(Status.ONSHELF);
+			returnedItems.peek().setDueDate(null);
+			System.out.println(returnedItems.pop().getTitle() + " returned to shelf");
 		}
-		returns.clear();
-
 	}
+
 }
